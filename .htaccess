@@ -1,0 +1,169 @@
+# Мощная защита от взлома и DDoS атак для веб-сервера
+# Оптимизировано для максимальной безопасности
+
+# Включаем движок mod_rewrite для манипуляции URL
+RewriteEngine On
+
+# Защита от сканирования директорий
+Options -Indexes
+
+# Предотвращение доступа к скрытым файлам
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Блокировка доступа к критическим файлам
+<FilesMatch "^(composer\.json|composer\.lock|package\.json|package-lock\.json|gulpfile\.js|webpack\.config\.js|Gruntfile\.js)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Базовая защита от DDoS атак - ограничение запросов
+<IfModule mod_evasive20.c>
+    DOSHashTableSize 3097
+    DOSPageCount 5
+    DOSSiteCount 100
+    DOSPageInterval 1
+    DOSSiteInterval 1
+    DOSBlockingPeriod 60
+</IfModule>
+
+# Дополнительная защита от брутфорс атак
+<IfModule mod_security2.c>
+    SecFilterEngine On
+    SecFilterScanPOST On
+    SecFilterDefaultAction "deny,log,status:403"
+</IfModule>
+
+# Защита от SQL-инъекций и XSS
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} (;|<|>|'|"|\)|%0A|%0D|%22|%27|%3C|%3E|%00).*(/\*|union|select|insert|cast|set|declare|drop|update|md5|benchmark) [NC]
+    RewriteRule .* - [F]
+</IfModule>
+
+# Блокировка подозрительных запросов
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} ^(HEAD|TRACE|DELETE|TRACK) [NC,OR]
+    RewriteCond %{THE_REQUEST} (\\r|\\n|%0A|%0D) [NC,OR]
+    RewriteCond %{HTTP_REFERER} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
+    RewriteCond %{HTTP_COOKIE} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/(,|;|:|<|>|">|"<|/|\\\.\.\\).{0,9999} [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+    RewriteCond %{HTTP_USER_AGENT} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC]
+    RewriteRule .* - [F]
+</IfModule>
+
+# Защита от подделки HTTP-заголовков
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set Content-Security-Policy "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; script-src 'self' https://unpkg.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https://i.pinimg.com https://s.f.kz https://cdn1.ozone.ru https://upload.wikimedia.org; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; worker-src 'self'; frame-src 'self' https://my.spline.design; object-src 'none';"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Защита от атак на кэш
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Защита от сканирования уязвимостей
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_URI} (wp-admin|wp-login|wp-content|wordpress|administrator|admin|includes|sites|modules|joomla|phpMyAdmin|myadmin|mysql|sql|backup|config|\.env) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Блокировка диапазонов IP с известной вредоносной активностью
+<Limit GET POST PUT DELETE>
+    Order Allow,Deny
+    Allow from all
+    # Примеры блокировки известных злонамеренных диапазонов IP
+    # Deny from 91.134.245.0/24
+    # Deny from 185.143.223.0/24
+    # Deny from 5.188.206.0/24
+</Limit>
+
+# Ограничение потенциально вредоносных ботов
+<IfModule mod_setenvif.c>
+    SetEnvIfNoCase User-Agent "^libwww-perl" blocked=yes
+    SetEnvIfNoCase User-Agent "^Wget" blocked=yes
+    SetEnvIfNoCase User-Agent "^Java" blocked=yes
+    SetEnvIfNoCase User-Agent "^Python" blocked=yes
+    SetEnvIfNoCase User-Agent "^Curl" blocked=yes
+    <Limit GET POST PUT>
+        Order Allow,Deny
+        Allow from all
+        Deny from env=blocked
+    </Limit>
+</IfModule>
+
+# Включаем CORS только для доверенных доменов
+<IfModule mod_headers.c>
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font\.css)$">
+        Header set Access-Control-Allow-Origin "https://fonts.googleapis.com"
+    </FilesMatch>
+</IfModule>
+
+# Форсированное перенаправление на HTTPS
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Защита от точечных DoS-атак: ограничение количества подключений
+<IfModule mod_qos.c>
+    QS_ClientEntries 50
+    QS_SrvMaxConnPerIP 50
+    QS_SrvMaxConnClose 50
+    QS_SrvMinDataRate 150 1200
+</IfModule>
+
+# Настройка сжатия данных для улучшения производительности и защиты от атак
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Установка максимального размера тела запроса для предотвращения DoS-атак
+<IfModule mod_rewrite.c>
+    RewriteRule .* - [env=noConLen:%{noContent}]
+    RewriteRule .* - [env=noConLen:%{noBodyLength}]
+    RewriteCond %{REQUEST_METHOD} =POST
+    RewriteCond %{HTTP:Content-Length} !^$
+    RewriteCond %{HTTP:Content-Length} >10485760
+    RewriteRule .* - [env=badCL:1]
+    RewriteCond %{REQUEST_METHOD} =POST
+    RewriteCond %{ENV:badCL} =1
+    RewriteRule .* /413.html [L]
+</IfModule>
+
+# Активация дополнительных средств защиты Apache
+<IfModule mod_headers.c>
+    Header unset ETag
+    FileETag None
+</IfModule>
+
+# Запрет доступа к системным файлам
+<FilesMatch "(\.(bak|config|dist|inc|log|sh|sql|swp|txt|env)|~)$">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</FilesMatch> 
