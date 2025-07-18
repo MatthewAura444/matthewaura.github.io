@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    max-width: 100%;
 }
 
 :root {
@@ -11,15 +12,29 @@
     --accent-color: rgba(255, 255, 255, 0.1);
 }
 
-body {
+/* Правило для предотвращения горизонтальной прокрутки */
+.container, section, .hero, .services-section, .skills-section, .creative-solutions,
+.works-section, .marquee-container, .book-container, .skills-container {
+    max-width: 100vw;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
+html, body {
     font-family: 'Montserrat', Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    overflow-x: hidden;
+    overflow-x: hidden !important;
     width: 100%;
+    max-width: 100vw;
+    position: relative;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeSpeed;
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
 }
 
 a {
@@ -230,6 +245,10 @@ img {
     z-index: 5;
     user-select: none;
     pointer-events: none;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    contain: layout paint;
 }
 
 /* Контейнер для Spline 3D модели */
@@ -1396,9 +1415,7 @@ textarea {
     }
     
          .circle-overlay {
-        width: 90vw;
-        height: 90vw;
-        z-index: 6; /* Повышаем z-index, чтобы был поверх робота */
+        display: none; /* Скрываем на мобильной версии */
     }
     
     /* Улучшенное отображение книг на мобильных */
@@ -1416,16 +1433,18 @@ textarea {
     /* Оптимизация отображения робота */
     #spline-container canvas {
         transform-origin: center center;
-        transform: scale(0.65) translateY(-10px);
+        transform: scale(0.55) translateY(40px);
         max-width: 100%;
         max-height: 100%;
     }
     
     .robot-container {
         overflow: visible;
-        width: 200%;
-        left: -50%;
-        right: -50%;
+        width: 120%;
+        left: -10%;
+        position: absolute;
+        transform: translateZ(0);
+        contain: paint style layout;
     }
     
     /* Улучшенное отображение секций */
@@ -1484,13 +1503,15 @@ textarea {
     
     /* Улучшенное масштабирование робота */
     #spline-container canvas {
-        transform: scale(0.6) translateY(-10px);
+        transform: scale(0.5) translateY(40px);
     }
     
     .robot-container {
-        width: 210%;
-        left: -55%;
-        right: -55%;
+        width: 130%;
+        left: -15%;
+        position: absolute;
+        transform: translateZ(0);
+        contain: paint style layout;
     }
     
     .section-title {
@@ -1545,13 +1566,15 @@ textarea {
     
     /* Дополнительное уменьшение робота */
     #spline-container canvas {
-        transform: scale(0.55) translateY(-10px);
+        transform: scale(0.45) translateY(30px);
     }
     
     .robot-container {
-        width: 230%;
-        left: -65%;
-        right: -65%;
+        width: 140%;
+        left: -20%;
+        position: absolute;
+        transform: translateZ(0);
+        contain: paint style layout;
     }
     
     .mobile-menu-btn {
@@ -1595,7 +1618,7 @@ textarea {
     
     /* Лучшее позиционирование робота */
     #spline-container canvas {
-        transform: scale(0.5) translateY(-15px);
+        transform: scale(0.4) translateY(30px);
     }
     
     /* Фиксация меню навигации */
@@ -1645,15 +1668,16 @@ html.landscape-mobile .logo {
 }
 
 html.landscape-mobile .robot-container {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     overflow: visible;
-    width: 220%;
-    left: -60%;
-    right: -60%;
+    width: 120%;
+    left: -10%;
+    position: absolute;
+    contain: paint style layout;
 }
 
 html.landscape-mobile #spline-container canvas {
-    transform: scale(0.5) translateY(-15px);
+    transform: scale(0.35) translateY(20px);
 }
 
 /* Стили для улучшения производительности на мобильных устройствах */
@@ -1669,6 +1693,40 @@ html.landscape-mobile #spline-container canvas {
     /* Улучшение плавности прокрутки */
     body {
         -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Блокировка горизонтальной прокрутки */
+    html, body, .container, section, .hero, #spline-container {
+        max-width: 100vw;
+        width: 100%;
+        overflow-x: hidden !important;
+    }
+    
+    /* Фиксация размеров и положения мобильного меню */
+    .main-nav {
+        width: 100vw;
+        max-width: 100vw;
+        left: 0;
+        right: 0;
+    }
+    
+    /* Запрет нежелательных жестов */
+    body {
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+    }
+} 
+
+/* Глобальные правила для предотвращения горизонтальной прокрутки */
+@media screen and (min-width: 1px) {
+    html, body {
+        max-width: 100vw;
+        overflow-x: hidden !important;
+    }
+    
+    #root, main, .container, .app-container {
+        max-width: 100vw;
+        overflow-x: hidden;
     }
 } 
 
