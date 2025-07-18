@@ -20,8 +20,19 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeSpeed;
-    line-height: 1.5; /* Added for better readability */
-    -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape */
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 13px;
+    }
 }
 
 a {
@@ -94,7 +105,6 @@ img {
     background-color: #000;
     will-change: transform;
     transform: translateZ(0);
-    overflow: hidden; /* Added to prevent content overflow */
 }
 
 /* Навигация */
@@ -109,8 +119,16 @@ img {
     justify-content: flex-end;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    background-color: rgba(0, 0, 0, 0.7); /* Increased opacity for better visibility */
+    background-color: rgba(0, 0, 0, 0.5);
     transition: padding 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        padding: 15px;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
 .nav-links {
@@ -121,7 +139,29 @@ img {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        padding: 20px 0;
+        z-index: 100;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+        margin-right: 0;
+    }
+    
+    .nav-links.active {
+        display: flex;
+        transform: translateY(0);
+    }
 }
 
 .nav-link {
@@ -133,7 +173,6 @@ img {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    white-space: nowrap; /* Prevent text wrapping within links */
 }
 
 .nav-link:hover {
@@ -186,7 +225,8 @@ img {
     white-space: nowrap;
     opacity: 0.9;
     font-weight: 300;
-    text-align: center; /* Ensure centered text */
+    width: 100%;
+    text-align: center;
 }
 
 .logo {
@@ -203,7 +243,26 @@ img {
     pointer-events: none;
     white-space: nowrap;
     opacity: 0.9;
-    text-align: center; /* Ensure centered text */
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .welcome {
+        top: 30%;
+    }
+    .logo {
+        top: 35%;
+    }
+}
+
+@media (max-width: 360px) {
+    .welcome {
+        font-size: clamp(0.7rem, 1rem, 1.2vw);
+    }
+    .logo {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+    }
 }
 
 /* Стили для разделительной секции между роботом и "Обо мне" */
@@ -255,41 +314,39 @@ img {
     contain: content;
 }
 
-/* Стили для canvas элемента Spline */
 #spline-container canvas {
     position: absolute;
-    width: 100% !important;
-    height: 160% !important;
-    transform: translateY(-15%) scale(0.7);
-    transform-origin: center;
-    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: transform 0.3s ease;
 }
 
-/* Медиа-запросы для адаптивного отображения робота */
+@media (max-width: 992px) {
+    #spline-container canvas {
+        transform: scale(0.85) translateY(-5%);
+    }
+}
+
 @media (max-width: 768px) {
     #spline-container canvas {
-        transform: translateY(-10%) scale(0.6);
+        transform: scale(0.75) translateY(-10%);
     }
 }
 
 @media (max-width: 480px) {
     #spline-container canvas {
-        transform: translateY(-5%) scale(0.45);
-        height: 140% !important;
+        transform: scale(0.65) translateY(-15%);
     }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 360px) {
     #spline-container canvas {
-        transform: translateY(0) scale(0.4);
-        height: 120% !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 500px) {
-    #spline-container canvas {
-        transform: translateY(-20%) scale(0.5);
+        transform: scale(0.55) translateY(-20%);
     }
 }
 
@@ -326,33 +383,10 @@ img {
     .robot-container iframe {
         will-change: transform, opacity;
         transition: opacity 0.2s ease, transform 0.2s ease;
-        transform: translateY(-15%) scale(0.6);
     }
     
     .robot-container.render-paused iframe {
-        transform: translateY(-15%) scale(0.6) translateZ(0.01px);
-    }
-}
-
-@media (max-width: 480px) {
-    .robot-container iframe {
-        transform: translateY(-5%) scale(0.5);
-        height: 140% !important;
-    }
-    
-    .robot-container.render-paused iframe {
-        transform: translateY(-5%) scale(0.5) translateZ(0.01px);
-    }
-}
-
-@media (max-width: 380px) {
-    .robot-container iframe {
-        transform: translateY(0) scale(0.4);
-        height: 120% !important;
-    }
-    
-    .robot-container.render-paused iframe {
-        transform: translateY(0) scale(0.4) translateZ(0.01px);
+        transform: translateY(-15%) scale(0.7) translateZ(0.01px);
     }
 }
 
@@ -420,14 +454,11 @@ img {
 
 /* Общие стили для секций */
 section {
-    padding: 80px 5%; /* Уменьшаем боковые отступы для мобильных устройств */
+    padding: 80px 10%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden; /* Prevent horizontal overflow */
 }
 
 .section-title {
@@ -435,7 +466,6 @@ section {
     font-weight: 700;
     margin-bottom: 20px;
     text-align: center;
-    width: 100%;
 }
 
 .section-desc {
@@ -446,7 +476,6 @@ section {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
 }
 
 /* Стили для кнопок */
@@ -538,55 +567,102 @@ section {
     margin-bottom: 60px;
 }
 
+/* Стили для секции с книгами */
 .book-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 35px;
-    width: 100%;
-    max-width: 1500px;
-    margin-top: 30px;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-/* Добавляем белые рамки для книг */
+@media (max-width: 992px) {
+    .book-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .book-container {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .book-container {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+        margin: 30px auto;
+        padding: 0 10px;
+    }
+}
+
 .book-item {
-    border: 3px solid white;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    padding: 15px;
-    margin-bottom: 30px;
-    background-color: #000;
-    display: flex;
-    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 480px) {
+    .book-item {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 .book-cover {
-    position: relative;
-    margin-bottom: 15px;
-    overflow: hidden;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    height: auto;
 }
 
 .book-cover img {
-    display: block;
     width: 100%;
     height: auto;
     object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 480px) {
+    .book-cover {
+        max-width: 160px;
+    }
+    
+    .book-title, .book-author, .book-desc {
+        text-align: center;
+    }
+    
+    .book-desc {
+        max-width: 280px;
+        margin: 0 auto;
+    }
 }
 
 .book-title {
-    font-size: clamp(1.5rem, 2vw, 2.2rem);
+    font-size: 2.2rem;
     font-weight: 600;
     margin-bottom: 8px;
     color: #fff;
 }
 
 .book-author {
-    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    font-size: 1.3rem;
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 18px;
     font-style: italic;
 }
 
 .book-desc {
-    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    font-size: 1.1rem;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.85);
     margin-top: 8px;
@@ -693,26 +769,18 @@ section {
     flex-direction: row;
     justify-content: space-around;
     text-align: center;
-    padding: 60px 5%; /* Уменьшенный боковой отступ */
+    padding: 60px 10%;
     min-height: auto;
     background-color: #000;
-    flex-wrap: wrap;
-    gap: 30px;
-}
-
-.stat-item {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 20px;
 }
 
 .stat-item h2 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: 4rem;
     margin-bottom: 10px;
 }
 
 .stat-item p {
-    font-size: clamp(1rem, 1.2vw, 1.2rem);
+    font-size: 1.2rem;
 }
 
 /* Стили для секции основателя */
@@ -947,56 +1015,68 @@ textarea {
 
 /* Стили для секции с навыками */
 .skills-section {
-    padding: 80px 20px;
+    padding: 80px 0;
     background-color: var(--bg-color);
-    position: relative;
-    z-index: 2;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
 }
 
 .skills-container {
-    width: 100%;
-    max-width: 900px;
-    margin: 40px auto 0;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
 .skill-item {
     display: flex;
     align-items: center;
-    margin-bottom: 25px;
-    position: relative;
-    padding: 5px 0;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+    .skill-item {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 25px;
+    }
 }
 
 .skill-name {
-    width: 120px;
-    font-size: 18px;
+    min-width: 100px;
     font-weight: 600;
-    text-align: right;
-    padding-right: 20px;
-    color: #fff;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    text-align: left;
+    flex: 0 0 100px;
+}
+
+@media (max-width: 480px) {
+    .skill-name {
+        margin-bottom: 5px;
+        min-width: auto;
+        flex: 0 0 auto;
+    }
 }
 
 .skill-bar {
     flex: 1;
-    height: 12px;
+    height: 10px;
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border-radius: 5px;
     overflow: hidden;
     position: relative;
-    margin: 0 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
+    margin: 0 15px;
+}
+
+@media (max-width: 480px) {
+    .skill-bar {
+        width: 100%;
+        margin: 5px 0;
+    }
 }
 
 .skill-level {
     height: 100%;
     background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
-    border-radius: 6px;
+    border-radius: 5px;
     width: 0;
     transition: width 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
@@ -1005,12 +1085,21 @@ textarea {
 
 .skill-percent {
     width: 60px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     text-align: left;
     padding-left: 10px;
     color: #fff;
     letter-spacing: 0.5px;
+}
+
+@media (max-width: 480px) {
+    .skill-percent {
+        width: auto;
+        font-size: 14px;
+        margin-top: 5px;
+        padding-left: 0;
+    }
 }
 
 /* Анимация появления полосок навыков */
@@ -1026,7 +1115,7 @@ textarea {
 /* Медиа-запросы для адаптивности */
 @media (max-width: 992px) {
     section {
-        padding: 60px 5%;
+        padding: 60px 20px;
     }
     
     .main-nav {
@@ -1046,15 +1135,10 @@ textarea {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 20px;
-        justify-content: center;
     }
     
     .skill-item {
         margin-bottom: 15px;
-    }
-    
-    .book-container {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 }
 
@@ -1094,16 +1178,11 @@ textarea {
     .section-desc {
         font-size: 0.9rem;
         line-height: 1.5;
-        padding: 0 10px;
     }
     
     .book-container {
-        grid-template-columns: 1fr; /* Single column on mobile */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
-    }
-    
-    .book-item {
-        padding: 12px;
     }
     
     .service-item h3 {
@@ -1113,11 +1192,6 @@ textarea {
     .founder-section h3 {
         font-size: 1.2rem;
         padding: 0 20px;
-    }
-    
-    .marquee span {
-        font-size: 14vw; /* Smaller text in the marquee */
-        padding: 0 10px;
     }
 }
 
@@ -1140,7 +1214,7 @@ textarea {
         top: 60px;
         left: 0;
         width: 100%;
-        background-color: rgba(0, 0, 0, 0.95); /* Darker background for better visibility */
+        background-color: rgba(0, 0, 0, 0.9);
         padding: 15px 0;
         transform: translateY(-150%);
         transition: transform 0.3s ease;
@@ -1153,7 +1227,6 @@ textarea {
     .language-switcher {
         top: 15px;
         left: 15px;
-        z-index: 1000; /* Make sure it's above everything else */
     }
     
     .section-title {
@@ -1162,7 +1235,6 @@ textarea {
     
     .section-desc {
         font-size: 0.85rem;
-        padding: 0 10px;
     }
     
     .contact-header h2 {
@@ -1173,42 +1245,9 @@ textarea {
         padding: 12px 25px;
         font-size: 14px;
     }
-    
-    .book-title {
-        font-size: 1.5rem;
-    }
-    
-    .book-author {
-        font-size: 1rem;
-    }
-    
-    .book-desc {
-        font-size: 0.9rem;
-    }
-    
-    .marquee span {
-        font-size: 12vw;
-        padding: 0 5px;
-    }
-    
-    .stats-section {
-        padding: 40px 5%;
-    }
-    
-    .stat-item {
-        margin-bottom: 15px;
-    }
-    
-    .stat-item h2 {
-        font-size: 2.5rem;
-    }
-    
-    .stat-item p {
-        font-size: 1rem;
-    }
 }
 
-/* Дополнительные медиа-запросы для очень маленьких устройств */
+/* Дополнительные медиа-запросы для лучшей отзывчивости */
 @media (max-width: 360px) {
     .welcome {
         font-size: 0.8rem;
@@ -1229,26 +1268,6 @@ textarea {
     .skill-percent {
         font-size: 12px;
     }
-    
-    .section-title {
-        font-size: 1.3rem;
-    }
-    
-    .section-desc {
-        font-size: 0.8rem;
-    }
-    
-    .book-title {
-        font-size: 1.3rem;
-    }
-    
-    .book-author {
-        font-size: 0.9rem;
-    }
-    
-    .book-desc {
-        font-size: 0.8rem;
-    }
 }
 
 /* Стили для ориентации экрана */
@@ -1268,18 +1287,6 @@ textarea {
     
     .robot-container iframe {
         transform: translateY(-20%) scale(0.6);
-    }
-    
-    section {
-        padding: 40px 5%;
-    }
-    
-    .section-title {
-        margin-bottom: 15px;
-    }
-    
-    .section-desc {
-        margin-bottom: 20px;
     }
 } 
 
@@ -1353,10 +1360,10 @@ textarea {
     width: 30px;
     height: 24px;
     position: relative;
-    z-index: 1001; /* Higher than other elements */
+    z-index: 101;
     cursor: pointer;
     margin-right: auto;
-    margin-left: 20px;
+    margin-left: 60px; /* Move it away from language switcher */
 }
 
 .mobile-menu-btn span {
@@ -1399,30 +1406,83 @@ textarea {
     .mobile-menu-btn {
         display: block;
     }
-    
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        position: fixed;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.95); /* Darker background for better visibility */
-        padding: 20px 0;
-        z-index: 100;
-        transform: translateY(-150%);
-        transition: transform 0.3s ease;
-        gap: 15px;
+}
+
+@media (max-width: 480px) {
+    .mobile-menu-btn {
+        margin-left: 50px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mobile-menu-btn {
+        margin-left: 40px;
+    }
+}
+
+/* Стили для адаптации под мобильные устройства */
+@media screen and (max-width: 768px) {
+    section {
+        padding: 60px 0;
     }
     
-    .nav-links.active {
-        display: flex;
-        transform: translateY(0);
+    .container {
+        padding: 0 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    section {
+        padding: 40px 0;
     }
     
-    .nav-link {
-        font-size: 16px; /* Larger font size for better touch targets */
-        padding: 10px 15px;
+    .container {
+        padding: 0 10px;
+    }
+    
+    .skill-item {
+        margin-bottom: 15px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    section {
+        padding: 30px 0;
+    }
+}
+
+/* Адаптивная высота для мобильных в ландшафтной ориентации */
+@media (orientation: landscape) and (max-height: 500px) {
+    .hero {
+        height: 120vh;
+    }
+    
+    .welcome {
+        top: 30%;
+    }
+    
+    .logo {
+        top: 40%;
+    }
+}
+
+/* Адаптация изображений книг для мобильных устройств */
+.book-cover {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    height: auto;
+}
+
+.book-cover img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+@media (max-width: 480px) {
+    .book-cover {
+        max-width: 160px;
     }
 } 
