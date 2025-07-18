@@ -324,48 +324,45 @@ function initLanguageSwitcher() {
 
 // Мобильное меню
 function initMobileMenu() {
-    // Создаем кнопку мобильного меню
-    const mobileMenuBtn = document.createElement('button');
-    mobileMenuBtn.className = 'mobile-menu-btn';
-    mobileMenuBtn.innerHTML = '<span></span><span></span><span></span>';
-    document.querySelector('.main-nav').prepend(mobileMenuBtn);
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
     
-    // Добавляем обработчик для открытия/закрытия меню
-    mobileMenuBtn.addEventListener('click', function() {
-        const navLinks = document.querySelector('.nav-links');
+    if (!mobileMenuBtn) return; // Выход если кнопка не найдена
+    
+    // Обработчик нажатия на кнопку меню
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('active');
         navLinks.classList.toggle('active');
-        this.classList.toggle('active');
     });
     
-    // Закрываем меню при клике на пункт меню
-    document.querySelector('.nav-links').addEventListener('click', function(e) {
-        if (e.target.classList.contains('nav-link')) {
-            document.querySelector('.nav-links').classList.remove('active');
-            document.querySelector('.mobile-menu-btn').classList.remove('active');
+    // Закрытие мобильного меню при клике по ссылке
+    document.querySelectorAll('.nav-links .nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+    
+    // Закрытие меню при изменении ориентации экрана
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
         }
     });
     
-    // Закрываем меню при скролле
-    window.addEventListener('scroll', function() {
-        const navLinks = document.querySelector('.nav-links');
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    // Добавление класса для тела документа при открытом меню
+    mobileMenuBtn.addEventListener('click', () => {
         if (navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        } else {
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
         }
     });
     
-    // Закрываем меню при клике вне меню
-    document.addEventListener('click', function(e) {
-        const navLinks = document.querySelector('.nav-links');
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        
-        if (!e.target.closest('.nav-links') && 
-            !e.target.closest('.mobile-menu-btn') && 
-            navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-        }
+    // Восстановление прокрутки при изменении размера окна
+    window.addEventListener('resize', () => {
+        document.body.style.overflow = '';
     });
 }
 
@@ -376,26 +373,20 @@ async function initRobot() {
         const splineContainer = document.getElementById('spline-container');
         if (!splineContainer) return;
 
-        // Определяем, находимся ли мы на мобильном устройстве
-        const isMobile = window.innerWidth <= 768;
-
         // Создаем экземпляр Application из Spline Runtime
         const spline = new window.SplineLoader();
         
-        // Загружаем модель из локального файла с оптимизированными настройками для мобильных устройств
+        // Загружаем модель из локального файла
         const app = await spline.loadFile('./scene.splinecode', {
             // Настройки для оптимальной производительности
             credentials: 'same-origin',
             background: { alpha: true }, // Прозрачный фон
             environmentPreset: 'neutral',
             rendererParams: {
-                powerPreference: isMobile ? 'default' : 'high-performance',
-                antialias: !isMobile, // Отключаем сглаживание на мобильных для производительности
-                alpha: true,
-                precision: isMobile ? 'lowp' : 'highp' // Снижаем точность на мобильных устройствах
-            },
-            // Снижаем качество текстур на мобильных
-            textureSize: isMobile ? 1024 : 2048 
+                powerPreference: 'high-performance',
+                antialias: true,
+                alpha: true
+            }
         });
         
         // Добавляем canvas в контейнер
@@ -414,11 +405,6 @@ async function initRobot() {
         
         // Управляем рендерингом в зависимости от видимости
         setupVisibilityControl(app);
-        
-        // Слушаем изменение размера окна для адаптации 3D модели
-        window.addEventListener('resize', () => {
-            app.resize();
-        });
         
     } catch (error) {
         console.error('Ошибка при загрузке 3D модели:', error);
@@ -472,10 +458,6 @@ function fallbackToIframe() {
     const splineContainer = document.getElementById('spline-container');
     if (!splineContainer) return;
     
-    // Определяем, находимся ли мы на мобильном устройстве
-    const isMobile = window.innerWidth <= 768;
-    const isSmallMobile = window.innerWidth <= 480;
-    
     // Создаем iframe как запасной вариант
     const iframe = document.createElement('iframe');
     iframe.src = "https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/";
@@ -487,35 +469,12 @@ function fallbackToIframe() {
     iframe.style.left = "0";
     iframe.style.width = "100%";
     iframe.style.height = "160%";
-    
-    // Адаптируем размер и позицию в зависимости от размера экрана
-    if (isSmallMobile) {
-        iframe.style.transform = "translateY(-15%) scale(0.6)";
-    } else if (isMobile) {
-        iframe.style.transform = "translateY(-15%) scale(0.65)";
-    } else {
-        iframe.style.transform = "translateY(-15%) scale(0.7)";
-    }
-    
+    iframe.style.transform = "translateY(-15%) scale(0.7)";
     iframe.style.transformOrigin = "center";
     
     // Добавляем iframe в контейнер
     splineContainer.innerHTML = '';
     splineContainer.appendChild(iframe);
-    
-    // Слушаем изменение размера окна для адаптации iframe
-    window.addEventListener('resize', () => {
-        const isMobile = window.innerWidth <= 768;
-        const isSmallMobile = window.innerWidth <= 480;
-        
-        if (isSmallMobile) {
-            iframe.style.transform = "translateY(-15%) scale(0.6)";
-        } else if (isMobile) {
-            iframe.style.transform = "translateY(-15%) scale(0.65)";
-        } else {
-            iframe.style.transform = "translateY(-15%) scale(0.7)";
-        }
-    });
 }
 
 // Оптимизированная анимация для полос навыков
@@ -593,20 +552,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Инициализируем плавную прокрутку
     initSmoothScrolling();
-    
-    // Добавляем обработчик для адаптации сайта при изменении размера окна
-    window.addEventListener('resize', function() {
-        // Проверяем, нужно ли скрыть/показать мобильное меню
-        const width = window.innerWidth;
-        const navLinks = document.querySelector('.nav-links');
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        
-        // Если разрешение больше 768px, то убираем класс active с меню
-        if (width > 768 && navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
-        }
-    });
 });
 
 // Добавляем оптимизации для производительности
@@ -640,3 +585,90 @@ window.addEventListener('load', function() {
         });
     }
 }); 
+
+// Оптимизация отображения 3D модели робота на мобильных устройствах
+function optimizeRobotForMobile() {
+    // Определяем, является ли устройство мобильным
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
+    if (isMobile) {
+        // Находим контейнер Spline
+        const splineContainer = document.getElementById('spline-container');
+        if (splineContainer) {
+            // Устанавливаем оптимальное масштабирование для мобильных устройств
+            const scale = window.innerWidth < 480 ? 0.7 : 0.85;
+            
+            // Если есть канвас внутри контейнера, применяем стили
+            const canvas = splineContainer.querySelector('canvas');
+            if (canvas) {
+                canvas.style.transformOrigin = 'center center';
+                canvas.style.transform = `scale(${scale})`;
+                canvas.style.maxWidth = '100%';
+                canvas.style.maxHeight = '100%';
+            }
+        }
+    }
+}
+
+// Улучшенная инициализация для мобильных устройств
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация системы безопасности
+    SecuritySystem.init();
+    
+    // Инициализация переключателя языков
+    initLanguageSwitcher();
+    
+    // Инициализация мобильного меню
+    initMobileMenu();
+    
+    // Инициализация 3D робота
+    initRobot();
+    
+    // Оптимизация отображения робота на мобильных устройствах
+    optimizeRobotForMobile();
+    
+    // Инициализация анимации шкал навыков
+    initSkillBars();
+    
+    // Инициализация плавной прокрутки
+    initSmoothScrolling();
+    
+    // Обработка ориентации экрана для мобильных устройств
+    handleDeviceOrientation();
+    
+    // Переинициализация при изменении размера окна
+    window.addEventListener('resize', function() {
+        optimizeRobotForMobile();
+        handleDeviceOrientation();
+    });
+    
+    // Обработка изменений ориентации устройства
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            optimizeRobotForMobile();
+            handleDeviceOrientation();
+        }, 100);
+    });
+});
+
+// Функция для обработки изменений ориентации экрана
+function handleDeviceOrientation() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile && isLandscape && window.innerHeight < 500) {
+        // Если мобильное устройство в ландшафтной ориентации с малой высотой
+        document.documentElement.classList.add('landscape-mobile');
+        
+        // Улучшаем отображение робота
+        const splineContainer = document.getElementById('spline-container');
+        if (splineContainer) {
+            const canvas = splineContainer.querySelector('canvas');
+            if (canvas) {
+                canvas.style.transform = 'scale(0.6)';
+            }
+        }
+    } else {
+        document.documentElement.classList.remove('landscape-mobile');
+    }
+} 
