@@ -1423,9 +1423,9 @@ textarea {
     
     .robot-container {
         overflow: visible;
-        width: 100%;
-        left: 0;
-        right: 0;
+        width: 150%;
+        left: -25%;
+        right: -25%;
     }
     
     /* Улучшенное отображение секций */
@@ -1488,9 +1488,9 @@ textarea {
     }
     
     .robot-container {
-        width: 100%;
-        left: 0;
-        right: 0;
+        width: 160%;
+        left: -30%;
+        right: -30%;
     }
     
     .section-title {
@@ -1549,9 +1549,9 @@ textarea {
     }
     
     .robot-container {
-        width: 100%;
-        left: 0;
-        right: 0;
+        width: 170%;
+        left: -35%;
+        right: -35%;
     }
     
     .mobile-menu-btn {
@@ -1647,9 +1647,9 @@ html.landscape-mobile .logo {
 html.landscape-mobile .robot-container {
     transform: translateY(0);
     overflow: visible;
-    width: 100%;
-    left: 0;
-    right: 0;
+    width: 160%;
+    left: -30%;
+    right: -30%;
 }
 
 html.landscape-mobile #spline-container canvas {
