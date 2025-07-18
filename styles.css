@@ -1461,21 +1461,17 @@ textarea {
     }
     
     .welcome {
-        top: 65%;
+        top: 43%;
         font-size: 1rem;
         width: 90%;
         text-align: center;
-        position: relative;
-        z-index: 20;
     }
     
     .logo {
-        top: 70%;
+        top: 50%;
         font-size: clamp(1.8rem, 6vw, 3rem);
         width: 90%;
         text-align: center;
-        position: relative;
-        z-index: 20;
     }
     
     .language-switcher {
@@ -1561,12 +1557,12 @@ textarea {
 @media (max-width: 480px) {
     .welcome {
         font-size: 0.9rem;
-        top: 65%;
+        top: 45%;
     }
     
     .logo {
         font-size: clamp(1.5rem, 5vw, 2.5rem);
-        top: 70%;
+        top: 52%;
     }
     
     .language-switcher {
@@ -1636,13 +1632,13 @@ textarea {
 @media (max-width: 375px) {
     .welcome {
         font-size: 0.8rem;
-        top: 65%;
+        top: 47%;
         width: 95%;
     }
     
     .logo {
         font-size: clamp(1.3rem, 4.5vw, 2rem);
-        top: 70%;
+        top: 54%;
     }
     
     /* Дополнительное уменьшение робота */
@@ -1738,17 +1734,13 @@ html.landscape-mobile .main-nav {
 }
 
 html.landscape-mobile .welcome {
-    top: 65%;
+    top: 25%;
     font-size: 0.9rem;
-    position: relative;
-    z-index: 20;
 }
 
 html.landscape-mobile .logo {
-    top: 70%;
+    top: 35%;
     font-size: 1.8rem;
-    position: relative;
-    z-index: 20;
 }
 
 html.landscape-mobile .robot-container {
@@ -1790,14 +1782,14 @@ html, body {
 /* Улучшенное отображение робота на мобильных устройствах */
 @media (max-width: 768px) {
     .robot-container {
-        width: 350% !important;
-        left: -125% !important;
-        right: -125% !important;
-        transform: scale(0.5) !important;
+        width: 300% !important;
+        left: -100% !important;
+        right: -100% !important;
+        transform: scale(0.65) !important;
     }
     
     #spline-container canvas {
-        transform: scale(0.5) !important;
+        transform: scale(0.65) !important;
     }
     
     .hero {
@@ -1850,23 +1842,23 @@ html, body {
         position: fixed !important;
     }
     
-    /* Улучшенное отображение робота - оптимальное расстояние */
+    /* Улучшенное отображение робота - еще ближе */
     .robot-container {
         transform-style: preserve-3d;
         perspective: 1000px;
-        width: 350% !important;
-        left: -125% !important;
-        right: -125% !important;
+        width: 300% !important;
+        left: -100% !important;
+        right: -100% !important;
         overflow: visible !important;
     }
     
     #spline-container {
-        max-width: 350%;
+        max-width: 300%;
         overflow: visible;
     }
     
     #spline-container canvas {
-        transform: scale(0.5) translateY(50px) !important;
+        transform: scale(0.65) translateY(50px) !important;
         transform-origin: center center !important;
     }
     
