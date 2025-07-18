@@ -1,1286 +1,1047 @@
-/* Сброс стилей и основные настройки */
+/* Base Styles */
+:root {
+    --primary-color: #000000;
+    --secondary-color: #ffffff;
+    --accent-color: #fafafa;
+    --text-color: #000000;
+    --text-light: #666666;
+    --font-primary: 'Roboto', 'Arial', sans-serif;
+    --font-secondary: 'Archivo Narrow', 'Arial Narrow', sans-serif;
+    --transition: all 0.3s ease;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    --text-color: #fff;
-    --bg-color: #000;
-    --accent-color: rgba(255, 255, 255, 0.1);
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Montserrat', Arial, sans-serif;
-    background-color: var(--bg-color);
+    font-family: var(--font-primary);
+    font-weight: 300;
+    line-height: 1.6;
     color: var(--text-color);
+    background-color: var(--secondary-color);
     overflow-x: hidden;
-    width: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeSpeed;
+    letter-spacing: 0.01em;
+    font-size: 18px;
+    -webkit-text-size-adjust: 100%; /* Prevent text size adjustment after orientation changes on iOS */
+}
+
+/* Унифицированные стили для всех языков */
+.nav-link,
+h1, h2, h3, h4, 
+.section-title {
+    font-family: var(--font-primary);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.translate {
+    font-family: var(--font-primary);
+    font-weight: 300 !important; /* Force consistent weight */
+    letter-spacing: 0.01em;
+}
+
+/* Ensure Russian text has the same weight */
+html[lang="ru"] .translate {
+    font-weight: 300 !important;
+}
+
+.logo h1,
+.hero h1,
+.hero h2 {
+    font-family: var(--font-primary);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+}
+
+/* Logo link styles */
+.logo a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.logo a:hover {
+    opacity: 0.8;
+}
+
+.container {
+    width: 90%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0 60px;
 }
 
 a {
-    color: inherit;
     text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
 }
 
 ul {
     list-style: none;
 }
 
+/* All images should be responsive */
 img {
     max-width: 100%;
     height: auto;
     display: block;
 }
 
-/* Стили для переключателя языков */
-.language-switcher {
+/* Fix for images in game and book cards */
+.game-video img, 
+.book-cover img {
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.section-title {
+    font-size: 2.2rem;
+    margin-bottom: 6rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-align: center;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
     position: absolute;
-    top: 20px;
-    left: 20px;
-    display: flex;
-    gap: 5px;
-    z-index: 100;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 0.5px;
+    background-color: var(--text-color);
 }
 
-.lang-btn {
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    padding: 5px 10px;
-    font-size: 14px;
+/* Language Selector */
+.language-selector {
+    position: static;
+    display: flex;
+    font-size: 0;
+    line-height: 0;
+    margin-left: 30px;
+}
+
+.language-selector button {
+    background: transparent;
+    border: 0.5px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0;
+    margin: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    will-change: background-color, color;
-}
-
-.lang-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.lang-btn.active {
-    background-color: #fff;
-    color: #000;
-    border-color: #fff;
-}
-
-/* Стили для главного экрана с роботом */
-.hero {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    background-color: #000;
-    will-change: transform;
-    contain: layout;
-}
-
-.container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-weight: 400;
+    outline: none;
+    height: 32px;
+    width: 50px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #000;
-    will-change: transform;
-    transform: translateZ(0);
+    vertical-align: top;
 }
 
-/* Навигация */
-.main-nav {
+.language-selector button:first-child {
+    border-right: none;
+}
+
+.language-selector button.active {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.language-selector button:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Header */
+header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px;
-    z-index: 100;
+    z-index: 999;
+    padding: 20px 0;
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.03);
+}
+
+header .container {
     display: flex;
-    justify-content: flex-end;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    background-color: rgba(0, 0, 0, 0.5);
-    transition: padding 0.3s ease;
-}
-
-.nav-links {
-    display: flex;
-    gap: 20px;
-    margin-right: 50px;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-.nav-link {
-    padding: 5px 10px;
-    text-transform: capitalize;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-.nav-link:hover {
-    color: #ccc;
-}
-
-.order-link {
-    font-weight: 600;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-/* Круг для создания визуального эффекта как на оригинальном сайте */
-.circle-overlay {
-    position: absolute;
-    width: 80vw;
-    height: 80vw;
-    max-width: 1200px;
-    max-height: 1200px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    z-index: 2;
-    transform: translateZ(0);
-}
-
-/* Градиент для создания тонкого свечения */
-.gradient-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, rgba(50, 50, 50, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%);
-    z-index: 3;
-    transform: translateZ(0);
-}
-
-/* Стили для текста на главном экране */
-.welcome {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translateX(-50%) translateZ(0);
-    font-size: clamp(1rem, 1.4rem, 2vw);
-    letter-spacing: 2px;
-    z-index: 10;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-    user-select: none;
-    pointer-events: none;
-    white-space: nowrap;
-    opacity: 0.9;
-    font-weight: 300;
-}
-
-.logo {
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translateX(-50%) translateZ(0);
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 600;
-    letter-spacing: 1px;
-    z-index: 10;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-    user-select: none;
-    pointer-events: none;
-    white-space: nowrap;
-    opacity: 0.9;
-}
-
-/* Стили для разделительной секции между роботом и "Обо мне" */
-.spacer-section {
-    width: 100%;
-    height: 100px;
-    background: linear-gradient(to bottom, #000000, #0a0a0a);
-    position: relative;
-    overflow: hidden;
-}
-
-/* На мобильных устройствах уменьшаем высоту разделителя */
-@media (max-width: 768px) {
-    .spacer-section {
-        height: 60px;
-    }
-}
-
-@media (max-width: 480px) {
-    .spacer-section {
-        height: 40px;
-    }
-}
-
-/* Стили для контейнера робота с нативным рендерингом */
-.robot-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 5;
-    user-select: none;
-    pointer-events: none;
-}
-
-/* Контейнер для Spline 3D модели */
-#spline-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    transform-style: preserve-3d;
-    contain: content;
-}
-
-/* Стили для canvas элемента Spline */
-#spline-container canvas {
-    position: absolute;
-    width: 100% !important;
-    height: 160% !important;
-    transform: translateY(-15%) scale(0.7);
-    transform-origin: center;
-    display: block;
-    pointer-events: none;
-}
-
-/* Медиа-запросы для адаптивного отображения робота */
-@media (max-width: 768px) {
-    #spline-container canvas {
-        transform: translateY(-15%) scale(0.6);
-    }
-}
-
-@media (max-width: 480px) {
-    #spline-container canvas {
-        transform: translateY(-15%) scale(0.5);
-    }
-}
-
-@media (orientation: landscape) and (max-height: 500px) {
-    #spline-container canvas {
-        transform: translateY(-20%) scale(0.5);
-    }
-}
-
-/* Стили для остановленного состояния рендера */
-.robot-container.render-paused iframe {
-    opacity: 0.99 !important; /* Используем 0.99 вместо 1 чтобы применить оптимизацию, но сохранить видимость */
-    filter: brightness(0.99) !important; /* Тонкое изменение, которое активирует оптимизации */
-    transform: translateY(-15%) scale(0.7) translateZ(0.01px);
-    content-visibility: auto;
-}
-
-/* Стили для активного состояния рендера */
-.robot-container.render-active iframe {
-    opacity: 1 !important;
-    filter: none !important;
-    transform: translateY(-15%) scale(0.7) translateZ(0);
-    content-visibility: visible;
-}
-
-/* Улучшенная анимация для поддержания активности робота при рендере */
-@keyframes keepRenderActive {
-    0%, 100% {
-        transform: translateZ(0);
-        opacity: 1;
-    }
-    50% {
-        transform: translateZ(0.001px);
-        opacity: 1;
-    }
-}
-
-/* Стили для адаптивного управления рендерингом на различных устройствах */
-@media (max-width: 768px) {
-    .robot-container iframe {
-        will-change: transform, opacity;
-        transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-    
-    .robot-container.render-paused iframe {
-        transform: translateY(-15%) scale(0.7) translateZ(0.01px);
-    }
-}
-
-/* Стиль для защитного слоя */
-.robot-protection {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 6;
-    background: transparent;
-    pointer-events: none !important;
-    animation: keepAliveAnimation 10s infinite linear; /* Добавляем постоянную анимацию */
-}
-
-/* Анимация для поддержания активности робота */
-@keyframes keepAliveAnimation {
-    0% { opacity: 1; }
-    50% { opacity: 1; }
-    100% { opacity: 1; }
-}
-
-/* Блокировщик взаимодействия с роботом */
-.robot-interaction-blocker {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    z-index: 20; /* Высокий z-index */
-    pointer-events: auto !important; /* Перехватываем события */
-    touch-action: none !important;
-    cursor: default !important;
-}
-
-/* Блокировщик для робота, но с разрешением анимации */
-.robot-blocker {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    z-index: 10;
-    pointer-events: none; /* Не блокируем события, чтобы они доходили до iframe */
-}
-
-/* Абсолютный блокировщик взаимодействия с роботом */
-.robot-absolute-blocker {
-    position: absolute; /* Меняем с fixed на absolute */
-    top: 0;
-    left: 0;
-    width: 100%; /* Меняем с 100vw на 100% */
-    height: 100%; /* Меняем с 100vh на 100% */
-    background-color: transparent;
-    z-index: 30; /* Самый высокий z-index */
-    pointer-events: auto !important;
-    touch-action: none !important;
-    cursor: default !important;
-    display: none; /* По умолчанию скрыт, будет показан только при наведении на робота */
-}
-
-
-/* Общие стили для секций */
-section {
-    padding: 80px 10%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.section-desc {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 30px;
-    max-width: 600px;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Стили для кнопок */
-.buttons-container {
-    display: flex;
-    gap: 20px;
-    margin-top: 30px;
-    justify-content: center;
-}
-
-.btn {
-    padding: 12px 30px;
-    border-radius: 30px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
-
-.primary-btn {
-    background-color: #fff;
-    color: #000;
-}
-
-.primary-btn:hover {
-    background-color: #eee;
-}
-
-.secondary-btn {
-    background-color: transparent;
-    border: 1px solid #fff;
-}
-
-.secondary-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Стили для секции услуг */
-.services-section {
-    position: relative;
-    display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
-.services-container {
-    max-width: 600px;
+/* Navigation */
+.logo h1 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav ul {
+    display: flex;
+    gap: 40px;
+}
+
+nav a {
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding-bottom: 3px;
+    border-bottom: 0.5px solid transparent;
+    font-weight: 400;
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 0.5px;
+    background-color: var(--primary-color);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+nav a:hover {
+    border-bottom: 0.5px solid transparent;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--secondary-color);
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.hero img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 5rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 40px;
+    line-height: 1.2;
+    font-weight: 400;
+}
+
+.hero h2 {
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    font-weight: 300;
+    color: var(--text-light);
+}
+
+/* Sections Common */
+section {
+    padding: 180px 0;
+    position: relative;
+}
+
+section:nth-child(odd) {
+    background-color: var(--accent-color);
+}
+
+section:not(.hero)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0.5px;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* About Section */
+.about-content {
+    max-width: 1000px;
     margin: 0 auto;
     text-align: center;
+    font-size: 1.35rem;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
 }
 
-.services-tagline {
-    font-size: 1.1rem;
-    font-style: italic;
-    margin-top: 60px;
-    max-width: 600px;
+.about-content p {
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+/* Skills Section */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 40px;
+    margin-top: 80px;
+}
+
+.skill {
+    background-color: transparent;
+    padding: 25px 15px;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+}
+
+.skill:hover {
+    background-color: rgba(0, 0, 0, 0.01);
+}
+
+.skill h3 {
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+}
+
+.lang-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 25px;
+    width: 35px;
+    height: 35px;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.lang-icon:after {
+    content: '';
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill:hover .lang-icon:after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.prog-icon {
+    width: 30px;
+    height: 30px;
+    fill: var(--primary-color);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.java-logo,
+.python-logo,
+.csharp-logo,
+.cpp-logo,
+.js-logo {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+.skill:hover .java-logo,
+.skill:hover .python-logo,
+.skill:hover .csharp-logo,
+.skill:hover .cpp-logo,
+.skill:hover .js-logo {
+    transform: scale(1.1);
+}
+
+.skill:hover .prog-icon {
+    transform: scale(1.1);
+}
+
+.skill-bar {
+    display: none;
+}
+
+.skill::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5px;
+    left: 0;
+    width: 0;
+    height: 0.5px;
+    background-color: var(--primary-color);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill:hover::after {
+    width: 100%;
+}
+
+/* Gaming Section */
+.gaming-intro {
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 1000px;
+    margin: 0 auto 100px;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    font-weight: 400;
+    font-size: 1.35rem;
 }
 
-/* Стили для секции Creative Solutions */
-.creative-solutions {
-    background-color: #000;
+.gaming h3 {
+    text-align: center;
+    margin-bottom: 80px;
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+}
+
+/* Game Cards */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 60px;
+    margin-top: 60px;
+}
+
+.game-card {
+    background: var(--accent-color);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.game-card:hover {
+    transform: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.01);
+}
+
+.game-card::before {
+    display: none;
+}
+
+.game-card:hover::before {
+    opacity: 0;
+}
+
+.game-video {
+    width: 100%;
+    position: relative;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    overflow: hidden;
+    margin-bottom: 25px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.game-video img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+.game-card:hover .game-video img {
+    transform: none;
+}
+
+.game-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.game-card h4 {
+    padding: 30px 40px 15px;
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+}
+
+.game-card p {
+    padding: 0 40px 30px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* Books Section */
+.books {
+    padding-top: 200px;
+    padding-bottom: 200px;
+}
+
+.books .section-title {
+    margin-bottom: 100px;
+}
+
+/* Book Cards */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+    margin-top: 60px;
+}
+
+.book-card {
+    background-color: var(--secondary-color);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 80px 3% 120px;
-    position: relative;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.creative-solutions h3 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 60px;
-    text-align: center;
+.book-card:hover {
+    transform: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.01);
 }
 
-.literary-title {
-    position: relative;
-    top: 0;
-    margin-bottom: 40px;
+.book-card::before {
+    display: none;
 }
 
-.services-header h2 {
-    font-size: 3rem;
-    margin-bottom: 60px;
-}
-
-.book-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 35px;
-    width: 100%;
-    max-width: 1500px;
-    margin-top: 30px;
-}
-
-/* Добавляем белые рамки для книг */
-.book-item {
-    border: 3px solid white;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    padding: 15px;
-    margin-bottom: 30px;
-    background-color: #000;
+.book-card:hover::before {
+    opacity: 0;
 }
 
 .book-cover {
     position: relative;
-    margin-bottom: 15px;
     overflow: hidden;
-}
-
-.book-cover img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.book-title {
-    font-size: 2.2rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #fff;
-}
-
-.book-author {
-    font-size: 1.3rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 18px;
-    font-style: italic;
-}
-
-.book-desc {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.85);
-    margin-top: 8px;
-    flex-grow: 1;
-}
-
-.service-item {
-    margin-bottom: 60px;
-    max-width: 600px;
-}
-
-.service-item h3 {
-    font-size: 2rem;
-    margin-bottom: 15px;
-}
-
-.service-item p {
-    font-size: 1.1rem;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-/* Стили для секции работ */
-.works-section {
-    background-color: #000;
-    overflow: hidden;
-    padding: 100px 0;
-    min-height: auto;
-    width: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    user-select: none; /* Запрещаем выделение текста */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE/Edge */
-    pointer-events: none; /* Отключаем события мыши */
-}
-
-.marquee-container {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    padding: 20px 0;
-    -webkit-mask-image: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%);
-    user-select: none; /* Запрещаем выделение текста */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE/Edge */
-}
-
-.marquee {
-    display: inline-block;
-    animation: marquee 75s linear infinite;
-    white-space: nowrap;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    will-change: transform;
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    user-select: none; /* Запрещаем выделение текста */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE/Edge */
-}
-
-.marquee span {
-    display: inline-block;
-    font-size: 18vw;
-    font-weight: 900;
-    text-transform: uppercase;
-    padding: 0 20px;
-    letter-spacing: 0;
-    font-family: 'Montserrat', sans-serif;
-    user-select: none; /* Запрещаем выделение текста */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE/Edge */
-}
-
-.marquee span.filled {
-    color: #fff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
-
-.marquee span.outline {
-    color: transparent;
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.9);
-}
-
-@keyframes marquee {
-    0% {
-        transform: translate3d(0, 0, 0);
-    }
-    100% {
-        transform: translate3d(-50%, 0, 0);
-    }
-}
-
-/* Стили для секции статистики */
-.stats-section {
-    flex-direction: row;
-    justify-content: space-around;
-    text-align: center;
-    padding: 60px 10%;
-    min-height: auto;
-    background-color: #000;
-}
-
-.stat-item h2 {
-    font-size: 4rem;
-    margin-bottom: 10px;
-}
-
-.stat-item p {
-    font-size: 1.2rem;
-}
-
-/* Стили для секции основателя */
-.founder-section {
-    padding: 100px 10%;
-    min-height: auto;
-    text-align: center;
-}
-
-.founder-section h3 {
-    font-size: 2rem;
-    max-width: 800px;
-    margin: 0 auto 40px;
-}
-
-.founder-info h4 {
-    font-size: 1.5rem;
-    text-transform: capitalize;
-    margin-bottom: 5px;
-}
-
-.founder-info p {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-}
-
-.contact-link {
-    display: inline-block;
-    padding: 10px 20px;
-    border-bottom: 1px solid #fff;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.contact-link:hover {
-    color: #ccc;
-    border-color: #ccc;
-}
-
-/* Стили для секции контактов */
-.contact-section {
-    background-color: #000;
-    align-items: center;
-}
-
-.contact-header {
+    height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 50px;
-    gap: 20px;
-}
-
-.contact-header h2 {
-    font-size: 3rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background: linear-gradient(145deg, #2c3e50, #34495e);
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
-    overflow: hidden;
-}
-
-.planet {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #3498db, #2980b9);
-    position: relative;
-    box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    animation: planetRotate 20s linear infinite;
-}
-
-.planet::before {
-    content: '';
-    position: absolute;
-    width: 60%;
-    height: 20%;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    top: 10%;
-    left: 20%;
-    filter: blur(2px);
-    transform: rotate(-15deg);
-}
-
-.planet::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 30%);
-}
-
-.ring {
-    position: absolute;
-    width: 60px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotateX(75deg);
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
-}
-
-.stars {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(1px 1px at 10px 10px, white, transparent),
-        radial-gradient(1px 1px at 20px 30px, white, transparent),
-        radial-gradient(1px 1px at 30px 10px, white, transparent),
-        radial-gradient(1px 1px at 40px 40px, white, transparent);
-    opacity: 0.3;
-    animation: twinkle 4s ease-in-out infinite alternate;
-}
-
-@keyframes planetRotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes twinkle {
-    0% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 0.7;
-    }
-}
-
-.contact-form {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 40px;
-}
-
-.contact-form h3 {
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-input, textarea {
-    padding: 15px;
-    background-color: #000;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: #fff;
-    font-family: inherit;
-}
-
-textarea {
-    min-height: 150px;
-    resize: vertical;
-}
-
-.tagline {
-    margin-top: 30px;
-    font-style: italic;
-}
-
-/* Стили для футера */
-.main-footer {
-    padding: 60px 10% 30px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    background-color: #000;
-}
-
-.footer-col h4 {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-}
-
-.footer-col ul li {
-    margin-bottom: 10px;
-}
-
-.footer-col ul li a {
-    color: #ccc;
-    transition: all 0.3s ease;
-}
-
-.footer-col ul li a:hover {
-    color: #fff;
-}
-
-.footer-bottom {
-    grid-column: 1 / -1;
-    padding-top: 30px;
-    margin-top: 20px;
-    border-top: 1px solid #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    color: #888;
-    font-size: 0.9rem;
-}
-
-.main-footer a, .footer-col h4, .footer-col ul li a {
+    background-color: #fafafa;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 }
 
-/* Стили для секции с навыками */
-.skills-section {
-    padding: 80px 20px;
-    background-color: var(--bg-color);
-    position: relative;
-    z-index: 2;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.skills-container {
+.book-cover img {
+    max-width: 100%;
+    max-height: 100%;
     width: 100%;
-    max-width: 900px;
-    margin: 40px auto 0;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
 }
 
-.skill-item {
+.book-card:hover .book-cover img {
+    transform: none;
+}
+
+.book-info {
+    flex: 1;
     display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-    position: relative;
-    padding: 5px 0;
+    flex-direction: column;
+    padding: 50px;
+    background-color: #fff;
 }
 
-.skill-name {
-    width: 120px;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: right;
-    padding-right: 20px;
-    color: #fff;
-    letter-spacing: 0.5px;
+.book-card h3 {
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    margin-bottom: 15px;
     text-transform: uppercase;
 }
 
-.skill-bar {
-    flex: 1;
-    height: 12px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    overflow: hidden;
+.book-card h4 {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    margin-bottom: 30px;
+}
+
+.book-card p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-top: auto;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 60px 0;
+    font-size: 1.05rem;
+}
+
+footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 30px;
+}
+
+.social-links a {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    margin: 0 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
 }
 
-.skill-level {
-    height: 100%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
-    border-radius: 6px;
-    width: 0;
-    transition: width 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-    position: relative;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+.social-links a:hover {
+    opacity: 0.7;
+    transform: translateY(-3px);
 }
 
-.skill-percent {
-    width: 60px;
-    font-size: 18px;
-    font-weight: 700;
-    text-align: left;
-    padding-left: 10px;
-    color: #fff;
-    letter-spacing: 0.5px;
-}
-
-/* Анимация появления полосок навыков */
-@keyframes skillAnimation {
-    from {
-        width: 0;
-    }
-    to {
-        width: 100%;
-    }
-}
-
-/* Медиа-запросы для адаптивности */
-@media (max-width: 992px) {
-    section {
-        padding: 60px 20px;
-    }
-    
-    .main-nav {
-        padding: 15px;
-    }
-    
-    .nav-links {
-        margin-right: 20px;
-        gap: 15px;
+/* Responsive */
+@media (max-width: 1200px) {
+    .hero h1 {
+        font-size: 4.2rem;
     }
     
     .section-title {
-        font-size: clamp(1.8rem, 3vw, 2.2rem);
+        font-size: 2rem;
     }
     
-    .stats-section {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 20px;
+    .games-grid,
+    .books-grid,
+    .skills-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 60px;
     }
     
-    .skill-item {
-        margin-bottom: 15px;
+    .book-cover {
+        height: 400px;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 80px;
+    }
+    
+    .book-cover {
+        height: 420px;
+    }
+    
+    .books {
+        padding-top: 160px;
+        padding-bottom: 160px;
     }
 }
 
 @media (max-width: 768px) {
-    .welcome {
-        top: 35%;
-        font-size: clamp(0.9rem, 1.2rem, 1.5vw);
+    .hero h1 {
+        font-size: 3rem;
+        letter-spacing: 0.12em;
     }
     
-    .logo {
-        top: 40%;
-        font-size: clamp(1.8rem, 4vw, 2.5rem);
+    .hero {
+        height: 90vh;
+        min-height: 500px;
     }
     
-    .main-nav {
-        padding: 10px;
-        justify-content: center;
+    nav ul {
+        gap: 25px;
     }
     
-    .nav-links {
-        margin-right: 0;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
+    .skills-grid,
+    .games-grid,
+    .books-grid {
+        grid-template-columns: 1fr;
     }
     
-    .nav-link {
-        padding: 5px 8px;
-        font-size: 14px;
+    section {
+        padding: 100px 0;
     }
     
-    .section-title {
-        font-size: clamp(1.6rem, 2.5vw, 2rem);
-        margin-bottom: 20px;
+    footer .container {
+        flex-direction: column;
+        gap: 30px;
     }
     
-    .section-desc {
-        font-size: 0.9rem;
-        line-height: 1.5;
-    }
-    
-    .book-container {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-    
-    .service-item h3 {
-        font-size: 1.3rem;
-    }
-    
-    .founder-section h3 {
-        font-size: 1.2rem;
+    .container {
         padding: 0 20px;
+        width: 100%;
+    }
+    
+    .about-content,
+    .gaming-intro {
+        font-size: 1.25rem;
+    }
+    
+    .game-card p,
+    .book-card p {
+        font-size: 1.05rem;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 40px;
+    }
+    
+    .book-cover {
+        height: 350px;
+    }
+
+    .books-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+    
+    .book-cover {
+        height: 400px;
+    }
+    
+    .books {
+        padding-top: 120px;
+        padding-bottom: 120px;
+    }
+    
+    .book-info {
+        padding: 40px;
+    }
+    
+    .lang-icon {
+        transform: scale(0.9);
+    }
+
+    /* Make game and book images smaller for better mobile display */
+    .game-video {
+        max-height: 300px;
+        overflow: hidden;
+    }
+    
+    .book-cover {
+        max-height: 380px;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        padding: 0 15px;
+    }
+
+    header {
+        padding: 15px 0;
     }
 }
 
 @media (max-width: 480px) {
-    .welcome {
-        top: 30%;
-        font-size: clamp(0.8rem, 1rem, 1.2vw);
+    .hero h1 {
+        font-size: 2.4rem;
+        letter-spacing: 0.1em;
+        margin-bottom: 25px;
     }
     
-    .logo {
-        top: 35%;
-        font-size: clamp(1.5rem, 3.5vw, 2rem);
+    .hero h2 {
+        font-size: 1rem;
+        letter-spacing: 0.15em;
     }
     
-    .nav-links {
+    header .container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0 15px;
+    }
+    
+    nav {
+        width: 100%;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
-        position: fixed;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.9);
-        padding: 15px 0;
-        transform: translateY(-150%);
-        transition: transform 0.3s ease;
     }
     
-    .nav-links.active {
-        transform: translateY(0);
-    }
-    
-    .language-switcher {
-        top: 10px;
-        left: 10px;
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 10px;
     }
     
     .section-title {
-        font-size: clamp(1.4rem, 2vw, 1.8rem);
-    }
-    
-    .section-desc {
-        font-size: 0.85rem;
-    }
-    
-    .contact-header h2 {
         font-size: 1.8rem;
+        margin-bottom: 4rem;
+    }
+
+    /* Responsive adjustments for language selector */
+    .language-selector {
+        margin-left: 0;
+        margin-top: 5px;
     }
     
-    .telegram-button {
-        padding: 12px 25px;
-        font-size: 14px;
+    .language-selector button {
+        height: 28px;
+        width: 40px;
+        font-size: 0.75rem;
+    }
+    
+    .book-info {
+        padding: 25px;
+    }
+    
+    .book-card h3 {
+        font-size: 1.4rem;
+    }
+    
+    .book-card h4 {
+        font-size: 0.9rem;
+    }
+    
+    .book-card p {
+        font-size: 1rem;
+    }
+    
+    .game-card {
+        margin-bottom: 30px;
+    }
+    
+    .game-video img {
+        height: auto;
+    }
+    
+    .about-content p {
+        font-size: 1.05rem;
+    }
+    
+    .gaming-intro p {
+        font-size: 1.05rem;
+    }
+
+    /* Additional responsive adjustments for very small screens */
+    .games-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .books-grid {
+        gap: 40px;
+    }
+    
+    .game-video {
+        height: auto;
+        max-height: 230px;
+    }
+    
+    .game-card h4 {
+        font-size: 1.4rem;
+        margin: 15px 0;
+    }
+
+    /* Even smaller for phones */
+    .game-video {
+        max-height: 220px;
+    }
+    
+    .book-cover {
+        max-height: 340px;
+    }
+
+    .hero-content {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    header {
+        padding: 10px 0;
+    }
+    
+    .logo h1 {
+        font-size: 1rem;
     }
 }
 
-/* Дополнительные медиа-запросы для лучшей отзывчивости */
-@media (max-width: 360px) {
-    .welcome {
+/* Additional mobile fixes for very small screens */
+@media (max-width: 380px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero h2 {
+        font-size: 0.9rem;
+    }
+    
+    .hero {
+        height: 85vh;
+        min-height: 450px;
+    }
+    
+    nav a {
         font-size: 0.8rem;
     }
     
-    .logo {
-        font-size: clamp(1.2rem, 3vw, 1.8rem);
+    .book-cover {
+        height: 320px;
     }
     
-    .skill-item {
-        margin-bottom: 12px;
+    .section-title {
+        font-size: 1.6rem;
     }
     
-    .skill-name {
-        font-size: 12px;
-    }
-    
-    .skill-percent {
-        font-size: 12px;
-    }
-}
-
-/* Стили для ориентации экрана */
-@media (orientation: landscape) and (max-height: 500px) {
-    .hero {
-        height: auto;
-        min-height: 100vh;
-    }
-    
-    .welcome {
-        top: 30%;
-    }
-    
-    .logo {
-        top: 40%;
-    }
-    
-    .robot-container iframe {
-        transform: translateY(-20%) scale(0.6);
-    }
-} 
-
-/* Стили для Telegram кнопки */
-.telegram-container {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.telegram-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-    color: #000000;
-    padding: 15px 30px;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 1.2rem;
-    margin: 20px 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
-    width: 100%;
-    max-width: 300px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.telegram-button:hover {
-    background-color: #f2f2f2;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
-}
-
-.telegram-button:active {
-    transform: translateY(0);
-    box-shadow: 0 3px 10px rgba(0, 136, 204, 0.4);
-}
-
-.telegram-icon {
-    width: 24px;
-    height: 24px;
-    fill: #000000;
-    margin-right: 10px;
-}
-
-.telegram-desc {
-    color: #ccc;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .telegram-button {
+    .about-content p,
+    .gaming-intro p,
+    .game-card p,
+    .book-card p {
         font-size: 1rem;
-        padding: 12px 25px;
+        line-height: 1.6;
+    }
+}
+
+/* Fix for tablets in portrait mode */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .hero {
+        height: 70vh;
+    }
+    
+    .container {
+        width: 95%;
+        padding: 0 30px;
+    }
+    
+    .section-title {
+        margin-bottom: 5rem;
     }
 } 
 
-/* Добавляем стили для мобильного меню */
-.mobile-menu-btn {
-    display: none;
-    background: transparent;
-    border: none;
-    width: 30px;
-    height: 24px;
-    position: relative;
-    z-index: 101;
-    cursor: pointer;
-    margin-right: auto;
-    margin-left: 20px;
-}
-
-.mobile-menu-btn span {
-    display: block;
+/* Fix for tables */
+table {
     width: 100%;
-    height: 2px;
-    background-color: #fff;
-    position: absolute;
-    left: 0;
-    transition: all 0.3s ease;
+    border-collapse: collapse;
+    margin: 20px 0;
 }
 
-.mobile-menu-btn span:nth-child(1) {
-    top: 0;
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.mobile-menu-btn span:nth-child(2) {
-    top: 11px;
+th {
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-.mobile-menu-btn span:nth-child(3) {
-    top: 22px;
-}
-
-.mobile-menu-btn.active span:nth-child(1) {
-    transform: rotate(45deg);
-    top: 11px;
-}
-
-.mobile-menu-btn.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.mobile-menu-btn.active span:nth-child(3) {
-    transform: rotate(-45deg);
-    top: 11px;
-}
-
+/* Responsive tables for mobile */
 @media (max-width: 768px) {
-    .mobile-menu-btn {
+    table, thead, tbody, th, td, tr {
         display: block;
     }
     
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        position: fixed;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.9);
-        padding: 20px 0;
-        z-index: 100;
-        transform: translateY(-150%);
-        transition: transform 0.3s ease;
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
     }
     
-    .nav-links.active {
-        display: flex;
-        transform: translateY(0);
+    tr {
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ddd;
+    }
+    
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+    
+    td:before {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.9em;
     }
 } 
