@@ -234,15 +234,17 @@ img {
 /* Стили для контейнера робота с нативным рендерингом */
 .robot-container {
     position: absolute;
-    width: 100%;
+    width: 120%;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
     z-index: 5;
     user-select: none;
     pointer-events: none;
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    left: -10%;
+    right: -10%;
 }
 
 /* Контейнер для Spline 3D модели */
@@ -259,6 +261,18 @@ img {
     -webkit-backface-visibility: hidden;
     transform-style: preserve-3d;
     contain: content;
+    
+    /* Предотвращение мерцания во время скролла */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    
+    /* Фиксирование позиции для предотвращения дрожания */
+    position: absolute;
+    transition: transform 0.1s ease-out;
+    
+    /* Предотвращение артефактов рендеринга */
+    z-index: 5;
 }
 
 /* Стили для canvas элемента Spline */
@@ -1429,7 +1443,7 @@ textarea {
     /* Оптимизация отображения робота */
     #spline-container canvas {
         transform-origin: center center;
-        transform: scale(0.65) translateY(-10px);
+        transform: scale(0.5) translateY(-20px);
         max-width: 100%;
         max-height: 100%;
         position: relative;
@@ -1437,10 +1451,10 @@ textarea {
     
     .robot-container {
         overflow: visible;
-        width: 100%;
+        width: 140%;
         position: absolute;
-        left: 0;
-        right: 0;
+        left: -20%;
+        right: -20%;
         transform: scale(0.75);
     }
     
@@ -1504,9 +1518,9 @@ textarea {
     }
     
     .robot-container {
-        width: 100%;
-        left: 0;
-        right: 0;
+        width: 150%;
+        left: -25%;
+        right: -25%;
         transform: scale(0.7);
     }
     
@@ -1566,9 +1580,9 @@ textarea {
     }
     
     .robot-container {
-        width: 100%;
-        left: 0;
-        right: 0;
+        width: 160%;
+        left: -30%;
+        right: -30%;
         transform: scale(0.65);
     }
     
@@ -1718,5 +1732,45 @@ html.landscape-mobile #spline-container canvas {
         transform-style: preserve-3d;
         perspective: 1000px;
     }
+} 
+
+/* Оптимизация производительности скролла */
+body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior-y: none; /* Предотвращает эффект "отскока" на iOS */
+}
+
+/* Улучшение производительности для тяжелых элементов */
+.hero, .robot-container, #spline-container {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+    
+    /* Предотвращение мерцания и улучшение производительности */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    
+    /* Включаем аппаратное ускорение */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+/* Фиксация проблем с фиксированными элементами */
+.main-nav {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Улучшение отображения круга вокруг робота */
+.circle-overlay {
+    will-change: transform;
+    pointer-events: none;
 } 
 
