@@ -1765,19 +1765,19 @@ html, body {
     .robot-container {
         transform-style: preserve-3d;
         perspective: 1000px;
-        width: 150% !important;
-        left: -25% !important;
-        right: -25% !important;
+        width: 180% !important;
+        left: -40% !important;
+        right: -40% !important;
         overflow: visible !important;
     }
     
     #spline-container {
-        max-width: 150%;
+        max-width: 180%;
         overflow: visible;
     }
     
     #spline-container canvas {
-        transform: scale(0.7) !important;
+        transform: scale(0.7) translateY(50px) !important;
         transform-origin: center center !important;
     }
     
