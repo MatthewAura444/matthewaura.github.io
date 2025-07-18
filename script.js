@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Smooth scrolling for navigation links with better mobile support
+    // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -101,24 +101,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                // Adjust offset based on screen size
-                let headerOffset = 90;
-                if (window.innerWidth <= 768) {
-                    headerOffset = 70;
-                }
-                if (window.innerWidth <= 480) {
-                    headerOffset = 60;
-                }
+                // Get the height of the header to adjust scroll position
+                const headerHeight = document.querySelector('header').offsetHeight;
                 
                 window.scrollTo({
-                    top: targetElement.offsetTop - headerOffset,
+                    top: targetElement.offsetTop - headerHeight - 10, // Adjusted offset for header
                     behavior: 'smooth'
                 });
                 
-                // Close mobile menu if implemented
-                // if (window.innerWidth <= 768 && mobileMenuToggle) {
-                //     closeMobileMenu();
-                // }
+                // On mobile, if the navbar takes up the whole width, close it after clicking
+                if (window.innerWidth <= 480) {
+                    // If we had a mobile menu toggle, we would close it here
+                }
             }
         });
     });
@@ -141,11 +135,17 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollTop = scrollTop;
     });
     
-    // Animation on scroll
+    // Animation on scroll - with performance optimizations for mobile
     const animateOnScroll = () => {
         const elements = document.querySelectorAll('.skill, .game-card, .book-card');
         
         elements.forEach(element => {
+            // Use IntersectionObserver if available for better performance
+            if ('IntersectionObserver' in window) {
+                return; // Observer will handle this below
+            }
+            
+            // Fallback for browsers without IntersectionObserver
             const elementPosition = element.getBoundingClientRect().top;
             const screenPosition = window.innerHeight / 1.05;
             
@@ -154,6 +154,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     };
+    
+    // Use IntersectionObserver for better scroll performance
+    if ('IntersectionObserver' in window) {
+        const appearOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const appearOnScroll = new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('appear');
+                    observer.unobserve(entry.target); // Stop observing once element appears
+                });
+            }, 
+            appearOptions
+        );
+        
+        document.querySelectorAll('.skill, .game-card, .book-card').forEach(element => {
+            appearOnScroll.observe(element);
+        });
+    } else {
+        // Fallback for browsers without IntersectionObserver
+        window.addEventListener('scroll', animateOnScroll);
+    }
     
     // Initial styles for animation
     document.querySelectorAll('.skill, .game-card, .book-card').forEach(element => {
@@ -184,9 +210,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Run animations on scroll
-    window.addEventListener('scroll', animateOnScroll);
+    if (!('IntersectionObserver' in window)) {
+        window.addEventListener('scroll', animateOnScroll);
+    }
     
-    // Run once on load
+    // Run once on load with slight delay to ensure DOM is fully ready
     setTimeout(animateOnScroll, 150);
 
     // Add hover effect to all interactive elements
@@ -265,79 +293,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
         });
-        
-        // Prevent touch actions for mobile
-        bookCovers.forEach(cover => {
-            cover.style.touchAction = 'none';
-        });
     };
     
-    // Prevent copying of game images
-    const preventGameCopy = () => {
-        const gameImages = document.querySelectorAll('.game-video img');
-        
-        // Disable right-click
-        gameImages.forEach(image => {
-            image.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                return false;
-            });
-            
-            // Disable dragging
-            image.setAttribute('draggable', 'false');
-            
-            // Prevent copy via keyboard
-            image.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x')) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
+    // Optimize image loading - Lazy load images
+    if ('loading' in HTMLImageElement.prototype) {
+        // Browser supports native lazy loading
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+            img.setAttribute('loading', 'lazy');
         });
-        
-        // Disable selection in game section
-        document.addEventListener('selectstart', (e) => {
-            if (e.target.closest('.game-video')) {
-                e.preventDefault();
-                return false;
-            }
-        });
-        
-        // Prevent drag start
-        document.addEventListener('dragstart', (e) => {
-            if (e.target.closest('.game-video img')) {
-                e.preventDefault();
-                return false;
-            }
-        });
-        
-        // Prevent touch actions for mobile
-        gameImages.forEach(image => {
-            image.style.touchAction = 'none';
-        });
-    };
-    
-    preventCopy();
-    preventBookCopy();
-    preventGameCopy();
-
-    // Adjust image sizes on small screens
-    function adjustImagesForMobile() {
-        const gameImages = document.querySelectorAll('.game-video img');
-        const bookCovers = document.querySelectorAll('.book-cover img');
-        
-        if (window.innerWidth <= 480) {
-            gameImages.forEach(img => {
-                img.style.height = 'auto';
-            });
-            
-            bookCovers.forEach(cover => {
-                cover.style.height = 'auto';
-            });
-        }
+    } else {
+        // Fallback for browsers that don't support lazy loading
+        // This could be expanded with a proper polyfill if needed
     }
     
-    // Run on load and resize
-    window.addEventListener('resize', adjustImagesForMobile);
-    adjustImagesForMobile();
+    // Improve touch experience for mobile
+    document.addEventListener('touchstart', function() {}, {passive: true});
+    
+    // Call the prevent copy functions
+    preventCopy();
+    preventBookCopy();
+    
+    // Handle initial animations
+    if ('IntersectionObserver' in window) {
+        // Already handled by the observer
+    } else {
+        // Trigger initial animation check
+        animateOnScroll();
+    }
 }); 
