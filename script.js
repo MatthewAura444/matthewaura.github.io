@@ -608,9 +608,9 @@ function optimizeRobotForMobile() {
                 if (robotContainer) {
                     // Настройка для видимости рук
                     robotContainer.style.overflow = 'visible';
-                    robotContainer.style.width = '180%';
-                    robotContainer.style.left = '-40%';
-                    robotContainer.style.right = '-40%';
+                    robotContainer.style.width = '220%';
+                    robotContainer.style.left = '-60%';
+                    robotContainer.style.right = '-60%';
                     
                     // Оптимизация для производительности
                     robotContainer.style.willChange = 'transform';
