@@ -366,13 +366,22 @@ function initMobileMenu() {
     });
 }
 
+// Глобальная переменная для хранения экземпляра Spline
+let splineInstance = null;
+let splineLoaded = false;
+
 // Загрузка и инициализация 3D модели робота
 async function initRobot() {
     try {
+        // Проверяем, был ли уже инициализирован Spline
+        if (splineLoaded) return;
+        
         // Получаем контейнер для Spline
         const splineContainer = document.getElementById('spline-container');
         if (!splineContainer) return;
 
+        console.log('Инициализация 3D модели робота...');
+        
         // Создаем экземпляр Application из Spline Runtime
         const spline = new window.SplineLoader();
         
@@ -385,11 +394,17 @@ async function initRobot() {
             rendererParams: {
                 powerPreference: 'high-performance',
                 antialias: true,
-                alpha: true
+                alpha: true,
+                preserveDrawingBuffer: true
             }
         });
         
+        // Сохраняем экземпляр для дальнейшего использования
+        splineInstance = app;
+        splineLoaded = true;
+        
         // Добавляем canvas в контейнер
+        splineContainer.innerHTML = '';
         splineContainer.appendChild(app.canvas);
 
         // Настраиваем сцену
@@ -403,8 +418,13 @@ async function initRobot() {
         // Получаем объект робота
         const robot = app.findObjectByName('Robot') || app.findObjectById('Robot');
         
-        // Управляем рендерингом в зависимости от видимости
+        // Улучшенная настройка видимости и производительности
         setupVisibilityControl(app);
+        
+        console.log('3D модель успешно инициализирована');
+        
+        // Применяем оптимизации для мобильных
+        optimizeRobotForMobile();
         
     } catch (error) {
         console.error('Ошибка при загрузке 3D модели:', error);
@@ -413,13 +433,20 @@ async function initRobot() {
     }
 }
 
-// Настройка управления видимостью и рендерингом
+// Улучшенное управление видимостью и рендерингом
 function setupVisibilityControl(splineApp) {
+    if (!splineApp) return;
+    
     // Флаг для отслеживания видимости робота
     let isVisible = true;
     let renderingPaused = false;
+    let lastScrollPosition = window.scrollY;
+    let renderingTimeout = null;
     
-    // Создаем IntersectionObserver для отслеживания видимости
+    // Оптимизация рендеринга
+    splineApp.setRenderQuality(0.8); // Снижаем качество для производительности
+    
+    // Создаем IntersectionObserver с более высоким порогом и rootMargin
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             // Обновляем статус видимости
@@ -427,16 +454,34 @@ function setupVisibilityControl(splineApp) {
             
             // Управляем рендерингом в зависимости от видимости
             if (isVisible && renderingPaused) {
-                // Возобновляем рендеринг
-                splineApp.play();
-                renderingPaused = false;
+                // Очищаем предыдущий таймаут
+                if (renderingTimeout) clearTimeout(renderingTimeout);
+                
+                // Задержка перед возобновлением рендеринга для предотвращения мерцания
+                renderingTimeout = setTimeout(() => {
+                    // Возобновляем рендеринг только когда элемент стабильно виден
+                    splineApp.play();
+                    renderingPaused = false;
+                    console.log('Возобновление рендеринга 3D модели');
+                }, 100);
+                
             } else if (!isVisible && !renderingPaused) {
-                // Приостанавливаем рендеринг для экономии ресурсов
-                splineApp.pause();
-                renderingPaused = true;
+                // Очищаем предыдущий таймаут
+                if (renderingTimeout) clearTimeout(renderingTimeout);
+                
+                // Задержка перед приостановкой рендеринга
+                renderingTimeout = setTimeout(() => {
+                    // Приостанавливаем рендеринг для экономии ресурсов
+                    splineApp.pause();
+                    renderingPaused = true;
+                    console.log('Приостановка рендеринга 3D модели (вне области видимости)');
+                }, 200);
             }
         });
-    }, { threshold: 0.1 });
+    }, { 
+        threshold: [0.1, 0.5], // Несколько порогов для плавности
+        rootMargin: '100px 0px' // Расширяем область наблюдения по вертикали
+    });
     
     // Начинаем наблюдение за контейнером робота
     observer.observe(document.querySelector('.robot-container'));
@@ -444,11 +489,50 @@ function setupVisibilityControl(splineApp) {
     // Также приостанавливаем рендеринг, когда вкладка неактивна
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') {
+            // Очищаем предыдущий таймаут
+            if (renderingTimeout) clearTimeout(renderingTimeout);
+            
             splineApp.pause();
             renderingPaused = true;
+            console.log('Приостановка рендеринга 3D модели (вкладка неактивна)');
         } else if (isVisible) {
+            // Очищаем предыдущий таймаут
+            if (renderingTimeout) clearTimeout(renderingTimeout);
+            
             splineApp.play();
             renderingPaused = false;
+            console.log('Возобновление рендеринга 3D модели (вкладка активна)');
+        }
+    });
+    
+    // Оптимизация для скролла
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        // Если скроллим быстро, временно понизим качество рендеринга
+        if (Math.abs(window.scrollY - lastScrollPosition) > 50) {
+            if (!renderingPaused) {
+                splineApp.setRenderQuality(0.6); // Еще ниже качество во время скролла
+            }
+        }
+        
+        lastScrollPosition = window.scrollY;
+        
+        // Сбрасываем таймаут
+        clearTimeout(scrollTimeout);
+        
+        // Восстанавливаем качество после завершения скролла
+        scrollTimeout = setTimeout(() => {
+            if (!renderingPaused) {
+                splineApp.setRenderQuality(0.8);
+            }
+        }, 300);
+    }, { passive: true });
+    
+    // Обработка ориентации экрана
+    window.addEventListener('resize', () => {
+        // Принудительное обновление рендеринга при изменении размера экрана
+        if (!renderingPaused && splineApp) {
+            splineApp.refresh();
         }
     });
 }
@@ -676,3 +760,83 @@ function handleDeviceOrientation() {
         robotContainer.style.overflow = 'visible';
     }
 } 
+
+// Оптимизация скролла для мобильных устройств
+function optimizeScroll() {
+    let lastScrollTop = 0;
+    let ticking = false;
+    
+    window.addEventListener('scroll', function() {
+        const st = window.pageYOffset;
+        
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                // Если скролл происходит слишком резко, замедляем его
+                if (Math.abs(st - lastScrollTop) > 50) {
+                    // Плавный скролл
+                    window.scrollTo({
+                        top: st,
+                        behavior: 'auto'
+                    });
+                }
+                
+                lastScrollTop = st;
+                ticking = false;
+            });
+            
+            ticking = true;
+        }
+    }, {passive: true});
+    
+    // Предотвращаем эффект "отскока" на iOS
+    document.addEventListener('touchmove', function(e) {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            // Находимся в нижней части страницы, предотвращаем отскок
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+
+// Единая функция инициализации приложения
+function initApp() {
+    // Проверяем, не была ли уже выполнена инициализация
+    if (window.appInitialized) return;
+    
+    console.log('Инициализация приложения...');
+    
+    // Системы
+    SecuritySystem.init();
+    initLanguageSwitcher();
+    initMobileMenu();
+    
+    // Инициализируем 3D модель робота
+    initRobot();
+    
+    // UI компоненты
+    initSkillBars();
+    initSmoothScrolling();
+    handleDeviceOrientation();
+    
+    // Функция оптимизации скролла
+    optimizeScroll();
+    
+    // Обработчики событий окна
+    window.addEventListener('resize', function() {
+        optimizeRobotForMobile();
+        handleDeviceOrientation();
+    }, { passive: true });
+    
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            optimizeRobotForMobile();
+            handleDeviceOrientation();
+        }, 100);
+    }, { passive: true });
+    
+    // Отмечаем, что инициализация выполнена
+    window.appInitialized = true;
+    console.log('Инициализация завершена');
+}
+
+// Добавляем вызов функции при загрузке DOM
+document.addEventListener('DOMContentLoaded', initApp); 
