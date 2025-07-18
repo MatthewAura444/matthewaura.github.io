@@ -1,567 +1,343 @@
-// Система безопасности для защиты от атак
-const SecuritySystem = {
-    // Настройки безопасности
-    settings: {
-        maxRequestsPerMinute: 300, // Увеличено с 100
-        botDetectionThreshold: 50, // Увеличено с 30
-        suspiciousPatternThreshold: 0.9, // Увеличено с 0.7
-        blockingDuration: 2000, // Уменьшено с 3000
-        verificationTimeout: 1500
-    },
+document.addEventListener('DOMContentLoaded', function() {
+    // Language Switching
+    const enBtn = document.getElementById('en-btn');
+    const ruBtn = document.getElementById('ru-btn');
+    const translateElements = document.querySelectorAll('.translate');
+    const navLinks = document.querySelectorAll('.nav-link');
     
-    // Счетчики и временные метки
-    counters: {
-        requests: 0,
-        suspicious: 0,
-        lastRequestTime: Date.now(),
-        blockedIps: new Set(),
-        attackDetected: false
-    },
+    // Default language
+    let currentLang = 'en';
     
-    // Инициализация системы безопасности
-    init: function() {
-        console.log('[SECURITY] System initialized');
-        this.setupProtection();
-        this.monitorNetwork();
-        this.setupAntiTampering();
+    // Function to update all translatable elements
+    function updateLanguage(lang) {
+        currentLang = lang;
         
-        // Регулярная очистка счетчиков
-        setInterval(() => this.resetCounters(), 60000);
-    },
-    
-    // Настройка базовой защиты
-    setupProtection: function() {
-        // Защита от XSS (валидация входных данных)
-        this.sanitizeInputs();
+        // Update HTML lang attribute
+        document.documentElement.setAttribute('lang', lang);
         
-        // Защита от злонамеренных действий
-        this.monitorUserBehavior();
-        
-        // Защита от атак брутфорса
-        this.preventBruteForce();
-    },
-    
-    // Сканирование и блокировка вредоносных запросов
-    monitorNetwork: function() {
-        // Перехват всех исходящих запросов
-        const originalFetch = window.fetch;
-        const originalXHR = window.XMLHttpRequest.prototype.open;
-        const security = this;
-        
-        // Переопределение fetch для мониторинга
-        window.fetch = function(url, options) {
-            if (security.isRequestBlocked()) {
-                console.warn('[SECURITY] Request blocked due to suspicious activity');
-                return Promise.reject(new Error('Request blocked by security system'));
-            }
-            
-            security.counters.requests++;
-            return originalFetch.apply(this, arguments);
-        };
-        
-        // Переопределение XHR для мониторинга
-        window.XMLHttpRequest.prototype.open = function(method, url) {
-            if (security.isRequestBlocked()) {
-                console.warn('[SECURITY] XHR request blocked due to suspicious activity');
-                throw new Error('Request blocked by security system');
-            }
-            
-            security.counters.requests++;
-            return originalXHR.apply(this, arguments);
-        };
-    },
-    
-    // Проверка, должен ли запрос быть заблокирован
-    isRequestBlocked: function() {
-        const now = Date.now();
-        const timeDiff = now - this.counters.lastRequestTime;
-        
-        // Обнаружение DDoS: слишком много запросов за короткое время
-        if (timeDiff < 1000 && this.counters.requests > this.settings.maxRequestsPerMinute) {
-            this.counters.suspicious++;
-            this.triggerDefense("Potential DDoS detected", true);
-            return true;
+        // Update active button
+        if (lang === 'en') {
+            enBtn.classList.add('active');
+            ruBtn.classList.remove('active');
+        } else {
+            ruBtn.classList.add('active');
+            enBtn.classList.remove('active');
         }
         
-        // Обновление временной метки
-        this.counters.lastRequestTime = now;
-        return this.counters.attackDetected;
-    },
-    
-    // Активация защитного механизма
-    triggerDefense: function(reason, blockUI = false) {
-        console.warn(`[SECURITY] Defense activated: ${reason}`);
-        this.counters.attackDetected = true;
-        
-        // Временная блокировка действий только при критических атаках
-        if (blockUI) {
-            document.documentElement.style.pointerEvents = 'none';
-            
-            // Восстановление через заданное время
-            setTimeout(() => {
-                document.documentElement.style.pointerEvents = 'auto';
-                console.log('[SECURITY] UI access restored');
-            }, this.settings.blockingDuration);
-        }
-        
-        // Сброс флага атаки через заданное время
-        setTimeout(() => {
-            this.counters.attackDetected = false;
-            console.log('[SECURITY] Defense deactivated');
-        }, this.settings.blockingDuration);
-    },
-    
-    // Сброс счетчиков безопасности
-    resetCounters: function() {
-        this.counters.requests = 0;
-        this.counters.suspicious = 0;
-    },
-    
-    // Мониторинг поведения пользователя для выявления ботов
-    monitorUserBehavior: function() {
-        let mouseMovements = 0;
-        let keyPresses = 0;
-        let lastActivityTime = Date.now();
-        
-        // Мониторинг движений мыши
-        document.addEventListener('mousemove', () => {
-            mouseMovements++;
-            lastActivityTime = Date.now();
-        }, { passive: true });
-        
-        // Мониторинг нажатий клавиш
-        document.addEventListener('keydown', () => {
-            keyPresses++;
-            lastActivityTime = Date.now();
-        }, { passive: true });
-        
-        // Периодическая проверка паттернов поведения
-        setInterval(() => {
-            const now = Date.now();
-            
-            // Проверка на естественную активность - более мягкие условия
-            if ((mouseMovements === 0 && keyPresses > 50) || 
-                (mouseMovements > 300 && now - lastActivityTime < 200)) {
-                this.counters.suspicious++;
-                
-                if (this.counters.suspicious > this.settings.botDetectionThreshold) {
-                    // Только логируем подозрительное поведение, не блокируем UI
-                    console.warn('[SECURITY] Suspicious behavior detected, but not blocking');
-                    this.counters.suspicious = 0; // Сбрасываем счетчик
-                }
+        // Update all translatable elements
+        translateElements.forEach(element => {
+            const translatedText = element.getAttribute(`data-${lang}`);
+            if (translatedText) {
+                // Fade out, change text, fade in
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.textContent = translatedText;
+                    element.style.opacity = '1';
+                    // Ensure consistent font weight for both languages
+                    element.style.fontWeight = '300';
+                }, 400);
             }
-            
-            // Сброс счетчиков активности
-            mouseMovements = 0;
-            keyPresses = 0;
-        }, 10000); // Увеличено с 5000 до 10000 мс
-    },
+        });
+        
+        // Update navigation links
+        navLinks.forEach(link => {
+            const translatedText = link.getAttribute(`data-${lang}`);
+            if (translatedText) {
+                // Subtle transition for nav links
+                link.style.opacity = '0.5';
+                setTimeout(() => {
+                    link.textContent = translatedText;
+                    link.style.opacity = '1';
+                }, 300);
+            }
+        });
+        
+        // Save language preference
+        localStorage.setItem('language', lang);
+    }
     
-    // Проверка и очистка входных данных для предотвращения XSS
-    sanitizeInputs: function() {
-        // Перехват всех форм и входных полей
-        document.addEventListener('submit', (e) => {
-            const form = e.target;
-            const inputs = form.querySelectorAll('input, textarea');
-            
-            inputs.forEach(input => {
-                const value = input.value;
-                // Проверка на потенциальные XSS инъекции
-                if (this.detectXSSPattern(value)) {
-                    e.preventDefault();
-                    this.triggerDefense("XSS attempt detected", true);
-                    console.warn('[SECURITY] Potential XSS attack blocked');
-                    input.value = this.sanitizeValue(value);
-                }
+    // Event listeners for language buttons
+    enBtn.addEventListener('click', () => updateLanguage('en'));
+    ruBtn.addEventListener('click', () => updateLanguage('ru'));
+    
+    // Check for saved language preference
+    const savedLang = localStorage.getItem('language');
+    if (savedLang) {
+        updateLanguage(savedLang);
+    } else {
+        // Add initial transition to all elements
+        translateElements.forEach(element => {
+            element.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            // Ensure consistent font weight initially
+            element.style.fontWeight = '300';
+        });
+        navLinks.forEach(link => {
+            link.style.transition = 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        });
+    }
+    
+    // Logo click handler - scroll to top
+    const logoLink = document.getElementById('logo-link');
+    if (logoLink) {
+        logoLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         });
-    },
-    
-    // Проверка на наличие подозрительных XSS паттернов
-    detectXSSPattern: function(value) {
-        if (!value) return false;
-        
-        // Регулярные выражения для выявления распространенных XSS атак
-        const xssPatterns = [
-            /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-            /javascript\s*:/gi,
-            /on\w+\s*=/gi,
-            /style\s*=\s*["'].*expression\s*\(/gi,
-            /data\s*:\s*text\/html/gi
-        ];
-        
-        return xssPatterns.some(pattern => pattern.test(value));
-    },
-    
-    // Санитизация подозрительных значений
-    sanitizeValue: function(value) {
-        return value
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#x27;")
-            .replace(/`/g, "&#x60;")
-            .replace(/\(/g, "&#40;")
-            .replace(/\)/g, "&#41;");
-    },
-    
-    // Защита от подделки запросов (CSRF)
-    preventBruteForce: function() {
-        let requestCount = 0;
-        let lastRequestTime = Date.now();
-        
-        // Мониторинг запросов
-        const checkRequest = () => {
-            const now = Date.now();
-            const timeDiff = now - lastRequestTime;
-            
-            // Если запросы слишком частые
-            if (timeDiff < 1000) {
-                requestCount++;
-                
-                if (requestCount > 10) {
-                    this.triggerDefense("Brute force attempt detected", false); // Не блокируем UI
-                    requestCount = 0;
-                }
-            } else {
-                requestCount = 0;
-            }
-            
-            lastRequestTime = now;
-        };
-        
-        // Прослушивание всех кликов
-        document.addEventListener('click', checkRequest, { passive: true });
-    },
-    
-    // Защита от изменения кода страницы
-    setupAntiTampering: function() {
-        const originalStyles = {};
-        const originalContent = {};
-        
-        // Сохранение оригинальных стилей важных элементов
-        document.querySelectorAll('.robot-container, .nav-links, .main-nav').forEach(el => {
-            originalStyles[el.className] = el.style.cssText;
-            originalContent[el.className] = el.innerHTML;
-        });
-        
-        // Проверка целостности элементов страницы
-        setInterval(() => {
-            document.querySelectorAll('.robot-container, .nav-links, .main-nav').forEach(el => {
-                // Проверка на изменения стилей
-                if (originalStyles[el.className] && 
-                    originalStyles[el.className] !== el.style.cssText) {
-                    console.warn('[SECURITY] Element styling was modified');
-                    el.style.cssText = originalStyles[el.className];
-                }
-                
-                // Проверка на внедрение вредоносного кода
-                if (originalContent[el.className] && 
-                    this.detectXSSPattern(el.innerHTML)) {
-                    console.warn('[SECURITY] DOM tampering detected');
-                    el.innerHTML = originalContent[el.className];
-                }
-            });
-        }, 2000);
-    }
-};
-
-// Функционал для переключения языков
-function initLanguageSwitcher() {
-    // Получаем кнопки переключения языков
-    const langButtons = document.querySelectorAll('.lang-btn');
-    
-    // Проверяем, есть ли сохраненный язык в localStorage
-    const savedLang = localStorage.getItem('selectedLanguage') || 'en';
-    
-    // Функция для изменения языка
-    function changeLanguage(lang) {
-        // Получаем все элементы с атрибутами data-en и data-ru
-        const elements = document.querySelectorAll('[data-' + lang + ']');
-        
-        // Обновляем текст для каждого элемента
-        elements.forEach(element => {
-            const translation = element.getAttribute('data-' + lang);
-            if (translation) {
-                // Если элемент имеет дочерний span, обновляем только его
-                const span = element.querySelector('span');
-                if (span) {
-                    span.textContent = translation;
-                } else {
-                    element.textContent = translation;
-                }
-            }
-        });
-        
-        // Обновляем атрибут lang у html
-        document.documentElement.lang = lang;
-        
-        // Сохраняем выбранный язык в localStorage
-        localStorage.setItem('selectedLanguage', lang);
-        
-        // Обновляем активную кнопку
-        langButtons.forEach(btn => {
-            if (btn.getAttribute('data-lang') === lang) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
     }
     
-    // Используем делегирование событий для обработки кликов по кнопкам
-    document.querySelector('.language-switcher').addEventListener('click', function(e) {
-        const btn = e.target.closest('.lang-btn');
-        if (btn) {
-            const lang = btn.getAttribute('data-lang');
-            changeLanguage(lang);
-        }
-    });
-    
-    // Устанавливаем язык при загрузке страницы
-    changeLanguage(savedLang);
-}
-
-// Мобильное меню
-function initMobileMenu() {
-    // Создаем кнопку мобильного меню
-    const mobileMenuBtn = document.createElement('button');
-    mobileMenuBtn.className = 'mobile-menu-btn';
-    mobileMenuBtn.innerHTML = '<span></span><span></span><span></span>';
-    document.querySelector('.main-nav').prepend(mobileMenuBtn);
-    
-    // Добавляем обработчик для открытия/закрытия меню
-    mobileMenuBtn.addEventListener('click', function() {
-        const navLinks = document.querySelector('.nav-links');
-        navLinks.classList.toggle('active');
-        this.classList.toggle('active');
-    });
-    
-    // Закрываем меню при клике на пункт меню
-    document.querySelector('.nav-links').addEventListener('click', function(e) {
-        if (e.target.classList.contains('nav-link')) {
-            document.querySelector('.nav-links').classList.remove('active');
-            document.querySelector('.mobile-menu-btn').classList.remove('active');
-        }
-    });
-}
-
-// Загрузка и инициализация 3D модели робота
-async function initRobot() {
-    try {
-        // Получаем контейнер для Spline
-        const splineContainer = document.getElementById('spline-container');
-        if (!splineContainer) return;
-
-        // Создаем экземпляр Application из Spline Runtime
-        const spline = new window.SplineLoader();
-        
-        // Загружаем модель из локального файла
-        const app = await spline.loadFile('./scene.splinecode', {
-            // Настройки для оптимальной производительности
-            credentials: 'same-origin',
-            background: { alpha: true }, // Прозрачный фон
-            environmentPreset: 'neutral',
-            rendererParams: {
-                powerPreference: 'high-performance',
-                antialias: true,
-                alpha: true
-            }
-        });
-        
-        // Добавляем canvas в контейнер
-        splineContainer.appendChild(app.canvas);
-
-        // Настраиваем сцену
-        const scene = app.findObjectByName('Scene');
-        if (scene) {
-            // Отключаем управление камерой, чтобы робот был статичным
-            app.setCamera(scene.findObjectByName('Default Camera'));
-            app.disableAllControls();
-        }
-
-        // Получаем объект робота
-        const robot = app.findObjectByName('Robot') || app.findObjectById('Robot');
-        
-        // Управляем рендерингом в зависимости от видимости
-        setupVisibilityControl(app);
-        
-    } catch (error) {
-        console.error('Ошибка при загрузке 3D модели:', error);
-        // Если не удалось загрузить модель, добавляем запасной вариант
-        fallbackToIframe();
-    }
-}
-
-// Настройка управления видимостью и рендерингом
-function setupVisibilityControl(splineApp) {
-    // Флаг для отслеживания видимости робота
-    let isVisible = true;
-    let renderingPaused = false;
-    
-    // Создаем IntersectionObserver для отслеживания видимости
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // Обновляем статус видимости
-            isVisible = entry.isIntersecting;
+    // Smooth scrolling for navigation links with better mobile support
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
             
-            // Управляем рендерингом в зависимости от видимости
-            if (isVisible && renderingPaused) {
-                // Возобновляем рендеринг
-                splineApp.play();
-                renderingPaused = false;
-            } else if (!isVisible && !renderingPaused) {
-                // Приостанавливаем рендеринг для экономии ресурсов
-                splineApp.pause();
-                renderingPaused = true;
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    // Начинаем наблюдение за контейнером робота
-    observer.observe(document.querySelector('.robot-container'));
-    
-    // Также приостанавливаем рендеринг, когда вкладка неактивна
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
-            splineApp.pause();
-            renderingPaused = true;
-        } else if (isVisible) {
-            splineApp.play();
-            renderingPaused = false;
-        }
-    });
-}
-
-// Запасной вариант с iframe, если не удалось загрузить модель
-function fallbackToIframe() {
-    const splineContainer = document.getElementById('spline-container');
-    if (!splineContainer) return;
-    
-    // Создаем iframe как запасной вариант
-    const iframe = document.createElement('iframe');
-    iframe.src = "https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/";
-    iframe.frameBorder = "0";
-    iframe.width = "100%";
-    iframe.height = "100%";
-    iframe.style.position = "absolute";
-    iframe.style.top = "0";
-    iframe.style.left = "0";
-    iframe.style.width = "100%";
-    iframe.style.height = "160%";
-    iframe.style.transform = "translateY(-15%) scale(0.7)";
-    iframe.style.transformOrigin = "center";
-    
-    // Добавляем iframe в контейнер
-    splineContainer.innerHTML = '';
-    splineContainer.appendChild(iframe);
-}
-
-// Оптимизированная анимация для полос навыков
-function initSkillBars() {
-    const skillItems = document.querySelectorAll('.skill-item');
-    if (skillItems.length === 0) return;
-    
-    // Используем IntersectionObserver для анимации при прокрутке
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const skillBar = entry.target.querySelector('.skill-level');
-                skillBar.style.width = skillBar.style.width || '0%';
+            const targetId = this.getAttribute('href');
+            
+            // Skip if it's the logo link (already handled)
+            if (this.id === 'logo-link') return;
+            
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                // Adjust offset based on screen size
+                let headerOffset = 90;
+                if (window.innerWidth <= 768) {
+                    headerOffset = 70;
+                }
+                if (window.innerWidth <= 480) {
+                    headerOffset = 60;
+                }
                 
-                // Используем requestAnimationFrame для плавной анимации
-                requestAnimationFrame(() => {
-                    skillBar.style.transition = 'width 1s ease-in-out';
-                    requestAnimationFrame(() => {
-                        skillBar.style.width = entry.target.querySelector('.skill-percent').textContent;
-                    });
+                window.scrollTo({
+                    top: targetElement.offsetTop - headerOffset,
+                    behavior: 'smooth'
                 });
                 
-                observer.unobserve(entry.target);
+                // Close mobile menu if implemented
+                // if (window.innerWidth <= 768 && mobileMenuToggle) {
+                //     closeMobileMenu();
+                // }
             }
         });
-    }, { threshold: 0.3 });
-    
-    // Наблюдаем за каждым элементом навыка
-    skillItems.forEach(item => {
-        observer.observe(item);
     });
-}
+    
+    // Header transparency on scroll
+    const header = document.querySelector('header');
+    let lastScrollTop = 0;
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > 100) {
+            header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+            header.style.boxShadow = '0 1px 5px rgba(0, 0, 0, 0.03)';
+        } else {
+            header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+            header.style.boxShadow = 'none';
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+    
+    // Animation on scroll
+    const animateOnScroll = () => {
+        const elements = document.querySelectorAll('.skill, .game-card, .book-card');
+        
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.05;
+            
+            if (elementPosition < screenPosition) {
+                element.classList.add('appear');
+            }
+        });
+    };
+    
+    // Initial styles for animation
+    document.querySelectorAll('.skill, .game-card, .book-card').forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(8px)';
+        element.style.transition = 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)';
+    });
+    
+    // Add CSS class for appeared elements
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+        .appear {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    `;
+    document.head.appendChild(styleSheet);
+    
+    // Stagger animation for cards
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach((card, index) => {
+        card.style.transitionDelay = `${index * 0.12}s`;
+    });
+    
+    const bookCards = document.querySelectorAll('.book-card');
+    bookCards.forEach((card, index) => {
+        card.style.transitionDelay = `${index * 0.12}s`;
+    });
+    
+    // Run animations on scroll
+    window.addEventListener('scroll', animateOnScroll);
+    
+    // Run once on load
+    setTimeout(animateOnScroll, 150);
 
-// Плавная прокрутка к якорям
-function initSmoothScrolling() {
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a[href^="#"]');
-        if (!link) return;
+    // Add hover effect to all interactive elements
+    const interactiveElements = document.querySelectorAll('a, button');
+    interactiveElements.forEach(element => {
+        element.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+    });
+    
+    // Prevent copying of programming language icons
+    const preventCopy = () => {
+        const langIcons = document.querySelectorAll('.lang-icon img');
         
-        const targetId = link.getAttribute('href');
-        if (!targetId || targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (!targetElement) return;
-        
+        // Disable right-click
+        langIcons.forEach(icon => {
+            icon.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable dragging
+            icon.setAttribute('draggable', 'false');
+            
+            // Prevent copy via keyboard
+            icon.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x')) {
                     e.preventDefault();
-        
-        // Плавная прокрутка с учетом фиксированной навигации
-        const navHeight = document.querySelector('.main-nav').offsetHeight;
-        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
-        
-                window.scrollTo({
-            top: targetPosition,
-                    behavior: 'smooth'
-        });
-    });
-}
-
-// Оптимизация для рендеринга страницы
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация системы безопасности
-    SecuritySystem.init();
-    
-    // Инициализируем переключатель языков
-    initLanguageSwitcher();
-    
-    // Инициализируем мобильное меню
-    initMobileMenu();
-    
-    // Инициализируем 3D модель робота
-    initRobot();
-    
-    // Инициализируем полосы навыков
-    initSkillBars();
-    
-    // Инициализируем плавную прокрутку
-    initSmoothScrolling();
-});
-
-// Добавляем оптимизации для производительности
-window.addEventListener('load', function() {
-    // Отложенная загрузка изображений
-    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-    if ('loading' in HTMLImageElement.prototype) {
-        lazyImages.forEach(img => {
-            if (img.dataset.src) {
-                img.src = img.dataset.src;
-                delete img.dataset.src;
-            }
-        });
-    } else {
-        // Фолбек для браузеров без поддержки lazy loading
-        const lazyImageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        delete img.dataset.src;
-                    }
-                    observer.unobserve(img);
+                    return false;
                 }
             });
         });
         
-        lazyImages.forEach(img => {
-            lazyImageObserver.observe(img);
+        // Disable selection
+        document.addEventListener('selectstart', (e) => {
+            if (e.target.closest('.lang-icon')) {
+                e.preventDefault();
+                return false;
+            }
         });
+    };
+    
+    // Prevent copying of book covers
+    const preventBookCopy = () => {
+        const bookCovers = document.querySelectorAll('.book-cover img');
+        
+        // Disable right-click
+        bookCovers.forEach(cover => {
+            cover.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable dragging
+            cover.setAttribute('draggable', 'false');
+            
+            // Prevent copy via keyboard
+            cover.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+        
+        // Disable selection in book section
+        document.addEventListener('selectstart', (e) => {
+            if (e.target.closest('.book-cover')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Prevent drag start
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.closest('.book-cover img')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Prevent touch actions for mobile
+        bookCovers.forEach(cover => {
+            cover.style.touchAction = 'none';
+        });
+    };
+    
+    // Prevent copying of game images
+    const preventGameCopy = () => {
+        const gameImages = document.querySelectorAll('.game-video img');
+        
+        // Disable right-click
+        gameImages.forEach(image => {
+            image.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable dragging
+            image.setAttribute('draggable', 'false');
+            
+            // Prevent copy via keyboard
+            image.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+        
+        // Disable selection in game section
+        document.addEventListener('selectstart', (e) => {
+            if (e.target.closest('.game-video')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Prevent drag start
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.closest('.game-video img')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Prevent touch actions for mobile
+        gameImages.forEach(image => {
+            image.style.touchAction = 'none';
+        });
+    };
+    
+    preventCopy();
+    preventBookCopy();
+    preventGameCopy();
+
+    // Adjust image sizes on small screens
+    function adjustImagesForMobile() {
+        const gameImages = document.querySelectorAll('.game-video img');
+        const bookCovers = document.querySelectorAll('.book-cover img');
+        
+        if (window.innerWidth <= 480) {
+            gameImages.forEach(img => {
+                img.style.height = 'auto';
+            });
+            
+            bookCovers.forEach(cover => {
+                cover.style.height = 'auto';
+            });
+        }
     }
+    
+    // Run on load and resize
+    window.addEventListener('resize', adjustImagesForMobile);
+    adjustImagesForMobile();
 }); 
