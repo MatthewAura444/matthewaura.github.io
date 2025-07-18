@@ -636,6 +636,18 @@ section {
     -ms-user-select: none; /* IE/Edge */
 }
 
+/* Специальные стили для мобильных устройств */
+@media (max-width: 768px) {
+    .marquee span {
+        font-size: calc(18vw * 1.5); /* Увеличено в 1.5 раза */
+    }
+    
+    .works-section {
+        overflow: visible;
+        height: auto;
+    }
+}
+
 .marquee span.filled {
     color: #fff;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
@@ -1300,10 +1312,69 @@ textarea {
 
 /* Улучшенные медиа-запросы для мобильной отзывчивости */
 
-/* Мобильное меню */
+/* Мобильное меню - исправленное */
 .mobile-menu-btn {
-    display: none; /* По умолчанию скрыто */
+    display: none;
+    width: 30px;
+    height: 24px;
+    position: relative;
+    z-index: 9999;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
+
+.mobile-menu-btn span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 2px;
+    position: absolute;
+    left: 0;
+    transition: all 0.3s ease;
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+}
+
+.mobile-menu-btn span:nth-child(1) {
+    top: 0;
+}
+
+.mobile-menu-btn span:nth-child(2) {
+    top: 10px;
+}
+
+.mobile-menu-btn span:nth-child(3) {
+    top: 20px;
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+    -webkit-transform: translateY(10px) rotate(45deg);
+    transform: translateY(10px) rotate(45deg);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    -webkit-transform: translateY(-10px) rotate(-45deg);
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+    }
+} 
 
 /* Общие стили для мобильных устройств */
 @media (max-width: 768px) {
@@ -1469,10 +1540,16 @@ textarea {
         margin-bottom: 15px;
     }
     
-    /* Улучшенное отображение бегущей строки */
+    /* Улучшенное отображение бегущей строки - увеличено в 3 раза */
     .marquee span {
-        font-size: 24px;
+        font-size: 72px; /* Увеличено в 3 раза с 24px */
         padding: 0 15px;
+    }
+    
+    .works-section {
+        padding: 100px 0;
+        transform: scale(1.5);
+        height: auto;
     }
 }
 
@@ -1542,8 +1619,12 @@ textarea {
     
     /* Оптимизация для очень маленьких экранов */
     .marquee span {
-        font-size: 18px;
+        font-size: 54px; /* Увеличено в 3 раза с 18px */
         padding: 0 10px;
+    }
+    
+    .works-section {
+        transform: scale(1.5);
     }
 }
 
