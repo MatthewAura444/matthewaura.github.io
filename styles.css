@@ -1782,14 +1782,14 @@ html, body {
 /* Улучшенное отображение робота на мобильных устройствах */
 @media (max-width: 768px) {
     .robot-container {
-        width: 130% !important;
-        left: -15% !important;
-        right: -15% !important;
-        transform: scale(0.8) !important;
+        width: 400% !important;
+        left: -150% !important;
+        right: -150% !important;
+        transform: scale(0.5) !important;
     }
     
     #spline-container canvas {
-        transform: scale(0.7) !important;
+        transform: scale(0.4) !important;
     }
     
     .hero {
@@ -1842,23 +1842,23 @@ html, body {
         position: fixed !important;
     }
     
-    /* Улучшенное отображение робота */
+    /* Улучшенное отображение робота - максимально отдалено */
     .robot-container {
         transform-style: preserve-3d;
         perspective: 1000px;
-        width: 220% !important;
-        left: -60% !important;
-        right: -60% !important;
+        width: 400% !important;
+        left: -150% !important;
+        right: -150% !important;
         overflow: visible !important;
     }
     
     #spline-container {
-        max-width: 220%;
+        max-width: 400%;
         overflow: visible;
     }
     
     #spline-container canvas {
-        transform: scale(0.6) translateY(50px) !important;
+        transform: scale(0.4) translateY(50px) !important;
         transform-origin: center center !important;
     }
     
