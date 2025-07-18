@@ -605,11 +605,11 @@ function optimizeRobotForMobile() {
                 // Делаем контейнер робота видимым за границами
                 const robotContainer = document.querySelector('.robot-container');
                 if (robotContainer) {
-                    // Настройка для видимости рук
+                    // Настройка для максимальной видимости рук
                     robotContainer.style.overflow = 'visible';
-                    robotContainer.style.width = '220%';
-                    robotContainer.style.left = '-60%';
-                    robotContainer.style.right = '-60%';
+                    robotContainer.style.width = '400%';
+                    robotContainer.style.left = '-150%';
+                    robotContainer.style.right = '-150%';
                     
                     // Оптимизация для производительности
                     robotContainer.style.willChange = 'transform';
