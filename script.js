@@ -605,11 +605,11 @@ function optimizeRobotForMobile() {
                 // Делаем контейнер робота видимым за границами
                 const robotContainer = document.querySelector('.robot-container');
                 if (robotContainer) {
-                    // Настройка для оптимального отображения робота
+                    // Настройка для приближенного отображения робота
                     robotContainer.style.overflow = 'visible';
-                    robotContainer.style.width = '350%';
-                    robotContainer.style.left = '-125%';
-                    robotContainer.style.right = '-125%';
+                    robotContainer.style.width = '300%';
+                    robotContainer.style.left = '-100%';
+                    robotContainer.style.right = '-100%';
                     
                     // Оптимизация для производительности
                     robotContainer.style.willChange = 'transform';
