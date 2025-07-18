@@ -595,16 +595,21 @@ function optimizeRobotForMobile() {
         // Находим контейнер Spline
         const splineContainer = document.getElementById('spline-container');
         if (splineContainer) {
-            // Устанавливаем оптимальное масштабирование для мобильных устройств
-            const scale = window.innerWidth < 480 ? 0.7 : 0.85;
-            
             // Если есть канвас внутри контейнера, применяем стили
             const canvas = splineContainer.querySelector('canvas');
             if (canvas) {
+                // Устанавливаем transformOrigin для корректного позиционирования
                 canvas.style.transformOrigin = 'center center';
-                canvas.style.transform = `scale(${scale})`;
+                
+                // Применяем разные стили в зависимости от размера экрана - CSS управляет остальными стилями
                 canvas.style.maxWidth = '100%';
                 canvas.style.maxHeight = '100%';
+                
+                // Делаем контейнер робота видимым за границами
+                const robotContainer = document.querySelector('.robot-container');
+                if (robotContainer) {
+                    robotContainer.style.overflow = 'visible';
+                }
             }
         }
     }
@@ -660,15 +665,14 @@ function handleDeviceOrientation() {
         // Если мобильное устройство в ландшафтной ориентации с малой высотой
         document.documentElement.classList.add('landscape-mobile');
         
-        // Улучшаем отображение робота
-        const splineContainer = document.getElementById('spline-container');
-        if (splineContainer) {
-            const canvas = splineContainer.querySelector('canvas');
-            if (canvas) {
-                canvas.style.transform = 'scale(0.6)';
-            }
-        }
+        // CSS управляет стилями трансформации для робота в разных ориентациях
     } else {
         document.documentElement.classList.remove('landscape-mobile');
+    }
+    
+    // Всегда делаем контейнер робота видимым за границами
+    const robotContainer = document.querySelector('.robot-container');
+    if (robotContainer) {
+        robotContainer.style.overflow = 'visible';
     }
 } 
