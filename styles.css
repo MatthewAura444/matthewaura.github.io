@@ -1416,7 +1416,7 @@ textarea {
     /* Оптимизация отображения робота */
     #spline-container canvas {
         transform-origin: center center;
-        transform: scale(0.65) translateY(0);
+        transform: scale(0.45) translateY(-10px);
         max-width: 100%;
         max-height: 100%;
     }
@@ -1484,7 +1484,7 @@ textarea {
     
     /* Улучшенное масштабирование робота */
     #spline-container canvas {
-        transform: scale(0.58) translateY(0);
+        transform: scale(0.4) translateY(-10px);
     }
     
     .robot-container {
@@ -1545,7 +1545,7 @@ textarea {
     
     /* Дополнительное уменьшение робота */
     #spline-container canvas {
-        transform: scale(0.5) translateY(0);
+        transform: scale(0.35) translateY(-10px);
     }
     
     .robot-container {
@@ -1595,7 +1595,7 @@ textarea {
     
     /* Лучшее позиционирование робота */
     #spline-container canvas {
-        transform: scale(0.5) translateY(0);
+        transform: scale(0.35) translateY(-15px);
     }
     
     /* Фиксация меню навигации */
@@ -1653,7 +1653,7 @@ html.landscape-mobile .robot-container {
 }
 
 html.landscape-mobile #spline-container canvas {
-    transform: scale(0.45) translateY(0);
+    transform: scale(0.32) translateY(-15px);
 }
 
 /* Стили для улучшения производительности на мобильных устройствах */
