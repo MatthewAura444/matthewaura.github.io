@@ -322,30 +322,34 @@ function initLanguageSwitcher() {
     changeLanguage(savedLang);
 }
 
-// Улучшенное мобильное меню
+// Мобильное меню
 function initMobileMenu() {
-    // Создаем кнопку мобильного меню если её ещё нет
-    if (!document.querySelector('.mobile-menu-btn')) {
-        const mobileMenuBtn = document.createElement('button');
-        mobileMenuBtn.className = 'mobile-menu-btn';
-        mobileMenuBtn.setAttribute('aria-label', 'Toggle menu');
-        mobileMenuBtn.innerHTML = '<span></span><span></span><span></span>';
-        document.querySelector('.main-nav').prepend(mobileMenuBtn);
-    }
-    
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const navLinks = document.querySelector('.nav-links');
+    // Создаем кнопку мобильного меню
+    const mobileMenuBtn = document.createElement('button');
+    mobileMenuBtn.className = 'mobile-menu-btn';
+    mobileMenuBtn.innerHTML = '<span></span><span></span><span></span>';
+    document.querySelector('.main-nav').prepend(mobileMenuBtn);
     
     // Добавляем обработчик для открытия/закрытия меню
-    mobileMenuBtn.addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent click propagation
+    mobileMenuBtn.addEventListener('click', function() {
+        const navLinks = document.querySelector('.nav-links');
         navLinks.classList.toggle('active');
         this.classList.toggle('active');
     });
     
     // Закрываем меню при клике на пункт меню
-    navLinks.addEventListener('click', function(e) {
+    document.querySelector('.nav-links').addEventListener('click', function(e) {
         if (e.target.classList.contains('nav-link')) {
+            document.querySelector('.nav-links').classList.remove('active');
+            document.querySelector('.mobile-menu-btn').classList.remove('active');
+        }
+    });
+    
+    // Закрываем меню при скролле
+    window.addEventListener('scroll', function() {
+        const navLinks = document.querySelector('.nav-links');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        if (navLinks.classList.contains('active')) {
             navLinks.classList.remove('active');
             mobileMenuBtn.classList.remove('active');
         }
@@ -353,65 +357,45 @@ function initMobileMenu() {
     
     // Закрываем меню при клике вне меню
     document.addEventListener('click', function(e) {
-        if (navLinks.classList.contains('active') && 
-            !e.target.closest('.nav-links') && 
-            !e.target.closest('.mobile-menu-btn')) {
+        const navLinks = document.querySelector('.nav-links');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        
+        if (!e.target.closest('.nav-links') && 
+            !e.target.closest('.mobile-menu-btn') && 
+            navLinks.classList.contains('active')) {
             navLinks.classList.remove('active');
             mobileMenuBtn.classList.remove('active');
         }
-    });
-    
-    // Закрываем меню при нажатии кнопки ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-        }
-    });
-    
-    // Закрываем меню при прокрутке (с небольшой задержкой)
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-            if (navLinks.classList.contains('active') && window.scrollY > 100) {
-                navLinks.classList.remove('active');
-                mobileMenuBtn.classList.remove('active');
-            }
-        }, 100);
     });
 }
 
-// Улучшенная загрузка и инициализация 3D модели робота
+// Загрузка и инициализация 3D модели робота
 async function initRobot() {
     try {
         // Получаем контейнер для Spline
         const splineContainer = document.getElementById('spline-container');
         if (!splineContainer) return;
 
-        // Определяем, мобильное ли устройство
-        const isMobile = window.innerWidth <= 768 || 
-                         ('ontouchstart' in window) || 
-                         (navigator.maxTouchPoints > 0);
-        
+        // Определяем, находимся ли мы на мобильном устройстве
+        const isMobile = window.innerWidth <= 768;
+
         // Создаем экземпляр Application из Spline Runtime
         const spline = new window.SplineLoader();
         
-        // Настройка качества в зависимости от устройства
-        const quality = isMobile ? 'low' : 'high';
-        const scale = isMobile ? 0.5 : 0.7;
-        
-        // Загружаем модель из локального файла с настройками для оптимальной производительности
+        // Загружаем модель из локального файла с оптимизированными настройками для мобильных устройств
         const app = await spline.loadFile('./scene.splinecode', {
+            // Настройки для оптимальной производительности
             credentials: 'same-origin',
             background: { alpha: true }, // Прозрачный фон
             environmentPreset: 'neutral',
             rendererParams: {
                 powerPreference: isMobile ? 'default' : 'high-performance',
-                antialias: !isMobile, // Отключаем для мобильных устройств
-                alpha: true
+                antialias: !isMobile, // Отключаем сглаживание на мобильных для производительности
+                alpha: true,
+                precision: isMobile ? 'lowp' : 'highp' // Снижаем точность на мобильных устройствах
             },
-            quality: quality // Низкое качество для мобильных устройств
+            // Снижаем качество текстур на мобильных
+            textureSize: isMobile ? 1024 : 2048 
         });
         
         // Добавляем canvas в контейнер
@@ -431,6 +415,11 @@ async function initRobot() {
         // Управляем рендерингом в зависимости от видимости
         setupVisibilityControl(app);
         
+        // Слушаем изменение размера окна для адаптации 3D модели
+        window.addEventListener('resize', () => {
+            app.resize();
+        });
+        
     } catch (error) {
         console.error('Ошибка при загрузке 3D модели:', error);
         // Если не удалось загрузить модель, добавляем запасной вариант
@@ -438,7 +427,7 @@ async function initRobot() {
     }
 }
 
-// Улучшенная настройка управления видимостью и рендерингом
+// Настройка управления видимостью и рендерингом
 function setupVisibilityControl(splineApp) {
     // Флаг для отслеживания видимости робота
     let isVisible = true;
@@ -476,38 +465,18 @@ function setupVisibilityControl(splineApp) {
             renderingPaused = false;
         }
     });
-    
-    // Приостанавливаем рендеринг на мобильных устройствах при скролле для улучшения производительности
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-        if (window.innerWidth <= 768) {
-            if (!renderingPaused) {
-                splineApp.pause();
-                renderingPaused = true;
-            }
-            
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(function() {
-                if (isVisible && renderingPaused) {
-                    splineApp.play();
-                    renderingPaused = false;
-                }
-            }, 200);
-        }
-    }, { passive: true });
 }
 
-// Улучшенный запасной вариант с iframe для мобильных устройств
+// Запасной вариант с iframe, если не удалось загрузить модель
 function fallbackToIframe() {
     const splineContainer = document.getElementById('spline-container');
     if (!splineContainer) return;
     
-    // Определяем, мобильное ли устройство
-    const isMobile = window.innerWidth <= 768 || 
-                     ('ontouchstart' in window) || 
-                     (navigator.maxTouchPoints > 0);
+    // Определяем, находимся ли мы на мобильном устройстве
+    const isMobile = window.innerWidth <= 768;
+    const isSmallMobile = window.innerWidth <= 480;
     
-    // Создаем iframe как запасной вариант с адаптивными стилями
+    // Создаем iframe как запасной вариант
     const iframe = document.createElement('iframe');
     iframe.src = "https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/";
     iframe.frameBorder = "0";
@@ -517,17 +486,13 @@ function fallbackToIframe() {
     iframe.style.top = "0";
     iframe.style.left = "0";
     iframe.style.width = "100%";
-    iframe.style.height = isMobile ? "140%" : "160%";
+    iframe.style.height = "160%";
     
-    // Адаптивный масштаб в зависимости от устройства
-    if (isMobile) {
-        if (window.innerWidth <= 380) {
-            iframe.style.transform = "translateY(0) scale(0.4)";
-        } else if (window.innerWidth <= 480) {
-            iframe.style.transform = "translateY(-5%) scale(0.5)";
-        } else {
-            iframe.style.transform = "translateY(-10%) scale(0.6)";
-        }
+    // Адаптируем размер и позицию в зависимости от размера экрана
+    if (isSmallMobile) {
+        iframe.style.transform = "translateY(-15%) scale(0.6)";
+    } else if (isMobile) {
+        iframe.style.transform = "translateY(-15%) scale(0.65)";
     } else {
         iframe.style.transform = "translateY(-15%) scale(0.7)";
     }
@@ -538,22 +503,16 @@ function fallbackToIframe() {
     splineContainer.innerHTML = '';
     splineContainer.appendChild(iframe);
     
-    // Добавляем слушатель изменения размера окна для адаптивности
-    window.addEventListener('resize', function() {
-        const isMobileNow = window.innerWidth <= 768;
+    // Слушаем изменение размера окна для адаптации iframe
+    window.addEventListener('resize', () => {
+        const isMobile = window.innerWidth <= 768;
+        const isSmallMobile = window.innerWidth <= 480;
         
-        if (isMobileNow) {
-            iframe.style.height = "140%";
-            
-            if (window.innerWidth <= 380) {
-                iframe.style.transform = "translateY(0) scale(0.4)";
-            } else if (window.innerWidth <= 480) {
-                iframe.style.transform = "translateY(-5%) scale(0.5)";
-            } else {
-                iframe.style.transform = "translateY(-10%) scale(0.6)";
-            }
+        if (isSmallMobile) {
+            iframe.style.transform = "translateY(-15%) scale(0.6)";
+        } else if (isMobile) {
+            iframe.style.transform = "translateY(-15%) scale(0.65)";
         } else {
-            iframe.style.height = "160%";
             iframe.style.transform = "translateY(-15%) scale(0.7)";
         }
     });
@@ -590,7 +549,7 @@ function initSkillBars() {
     });
 }
 
-// Плавная прокрутка к якорям с учётом мобильного меню
+// Плавная прокрутка к якорям
 function initSmoothScrolling() {
     document.addEventListener('click', function(e) {
         const link = e.target.closest('a[href^="#"]');
@@ -602,107 +561,82 @@ function initSmoothScrolling() {
         const targetElement = document.querySelector(targetId);
         if (!targetElement) return;
         
-        e.preventDefault();
+                    e.preventDefault();
         
-        // Закрываем мобильное меню если оно открыто
-        const navLinks = document.querySelector('.nav-links');
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        
-        if (navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-        }
-        
-        // Учитываем высоту навигационной панели
+        // Плавная прокрутка с учетом фиксированной навигации
         const navHeight = document.querySelector('.main-nav').offsetHeight;
-        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-        const offsetPosition = targetPosition - navHeight;
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
         
-        // Плавная прокрутка с учётом мобильных устройств
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
+                window.scrollTo({
+            top: targetPosition,
+                    behavior: 'smooth'
         });
     });
 }
 
-// Функция для проверки поддержки WebP (для оптимизации изображений)
-function checkWebpSupport() {
-    const webpTest = new Image();
-    webpTest.onload = function() {
-        const result = (webpTest.width > 0) && (webpTest.height > 0);
-        document.documentElement.classList.add(result ? 'webp' : 'no-webp');
-    };
-    webpTest.onerror = function() {
-        document.documentElement.classList.add('no-webp');
-    };
-    webpTest.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
-}
-
-// Функция для адаптации контента под высоту экрана на мобильных устройствах
-function adaptContentToScreenHeight() {
-    const hero = document.querySelector('.hero');
-    const vh = window.innerHeight * 0.01;
-    
-    // Устанавливаем CSS переменную, которую можно использовать вместо vh
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-    
-    // Устанавливаем высоту для первой секции
-    hero.style.height = `calc(var(--vh, 1vh) * 100)`;
-    
-    // Обновляем высоту при изменении размера окна
-    window.addEventListener('resize', () => {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        hero.style.height = `calc(var(--vh, 1vh) * 100)`;
-    });
-}
-
-// Оптимизация загрузки изображений
-function lazyLoadImages() {
-    if ('loading' in HTMLImageElement.prototype) {
-        // Если браузер поддерживает нативную ленивую загрузку
-        const images = document.querySelectorAll('img[loading="lazy"]');
-        images.forEach(img => {
-            img.src = img.dataset.src;
-            if (img.dataset.srcset) {
-                img.srcset = img.dataset.srcset;
-            }
-        });
-    } else {
-        // Fallback для браузеров без поддержки
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
-        document.body.appendChild(script);
-    }
-}
-
-// Инициализация всех функций при загрузке страницы
+// Оптимизация для рендеринга страницы
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация системы безопасности
     SecuritySystem.init();
     
-    // Инициализация переключателя языков
+    // Инициализируем переключатель языков
     initLanguageSwitcher();
     
-    // Инициализация мобильного меню
+    // Инициализируем мобильное меню
     initMobileMenu();
     
-    // Инициализация 3D модели робота
+    // Инициализируем 3D модель робота
     initRobot();
     
-    // Инициализация анимации полос навыков
+    // Инициализируем полосы навыков
     initSkillBars();
     
-    // Инициализация плавной прокрутки к якорям
+    // Инициализируем плавную прокрутку
     initSmoothScrolling();
     
-    // Проверка поддержки WebP
-    checkWebpSupport();
-    
-    // Адаптация контента под высоту экрана
-    adaptContentToScreenHeight();
-    
-    // Ленивая загрузка изображений
-    lazyLoadImages();
+    // Добавляем обработчик для адаптации сайта при изменении размера окна
+    window.addEventListener('resize', function() {
+        // Проверяем, нужно ли скрыть/показать мобильное меню
+        const width = window.innerWidth;
+        const navLinks = document.querySelector('.nav-links');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        
+        // Если разрешение больше 768px, то убираем класс active с меню
+        if (width > 768 && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+        }
+    });
+});
+
+// Добавляем оптимизации для производительности
+window.addEventListener('load', function() {
+    // Отложенная загрузка изображений
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    if ('loading' in HTMLImageElement.prototype) {
+        lazyImages.forEach(img => {
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                delete img.dataset.src;
+            }
+        });
+    } else {
+        // Фолбек для браузеров без поддержки lazy loading
+        const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        delete img.dataset.src;
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        lazyImages.forEach(img => {
+            lazyImageObserver.observe(img);
+        });
+    }
 }); 
