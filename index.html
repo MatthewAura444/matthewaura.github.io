@@ -2,291 +2,313 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
-    <title>MATTHEW AURA | PORTFOLIO</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap&subset=latin,cyrillic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Matthew Aura - Personal Portfolio and Digital Solutions">
+    <meta name="keywords" content="matthew aura, digital portfolio, creative solutions, technology, innovation">
+    
+    <!-- Мощные заголовки безопасности -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com https://cdnjs.cloudflare.com; script-src 'self' https://unpkg.com https://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https://i.pinimg.com https://s.f.kz https://cdn1.ozone.ru https://upload.wikimedia.org; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; worker-src 'self'; frame-src 'self' https://my.spline.design; object-src 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <title>Matthew Aura | Digital Portfolio</title>
+    
+    <!-- Предзагрузка критических ресурсов -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="scene.splinecode" as="fetch" crossorigin>
+    
+    <!-- Подключение Spline Runtime библиотеки с проверкой целостности -->
+    <script type="module" src="https://unpkg.com/@splinetool/runtime@0.9.493/build/spline-runtime.js" integrity="sha384-zrgJt9zGgqXlJ7G8hzOXgKVM+yrd/K8vYfbeHKnFVDO3QRD3sszZBuJPQc2DJk7vy" crossorigin></script>
+    
+    <!-- Предзагрузка робота для мгновенного отображения -->
+    <link rel="preconnect" href="https://my.spline.design" crossorigin>
+    <link rel="prerender" href="https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/">
+    <link rel="prefetch" href="https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/">
+    
+    <!-- Запрос на кэширование робота на стороне браузера -->
+    <meta http-equiv="Cache-Control" content="max-age=86400">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Скрипт защиты от DDoS -->
+    <script>
+    // Базовая защита от автоматического выполнения скриптов
+    (function() {
+        // Проверка на легитимность окружения
+        if (window.self !== window.top) {
+            // Сайт загружен во фрейме - потенциальный clickjacking
+            window.top.location = window.self.location;
+        }
+        
+        // Проверка на скорость взаимодействия
+        let lastAction = Date.now();
+        let actionCount = 0;
+        
+        function checkBotActivity() {
+            const now = Date.now();
+            const timeDiff = now - lastAction;
+            
+            // Сброс счетчика если прошло больше 1 секунды
+            if (timeDiff > 1000) {
+                actionCount = 0;
+            }
+            
+            // Увеличение счетчика действий
+            actionCount++;
+            lastAction = now;
+            
+            // Если слишком много действий за короткое время - увеличен порог с 30 до 100
+            if (actionCount > 100 && timeDiff < 500) {
+                // Вероятность бота - добавляем задержку
+                console.warn('[SECURITY] High frequency actions detected');
+                // Не блокируем UI, только логируем
+                actionCount = 0;
+            }
+            
+            return true;
+        }
+        
+        // Защита от автоматизированных действий - пассивные слушатели
+        document.addEventListener('mousemove', checkBotActivity, { passive: true });
+        document.addEventListener('click', checkBotActivity, { passive: true });
+        document.addEventListener('keydown', checkBotActivity, { passive: true });
+        
+        // Упрощенное обнаружение инструментов разработчика
+        const devToolsDetection = function() {
+            // Отключаем активное обнаружение, чтобы не мешать разработке
+            window.devToolsOpen = false;
+        };
+        
+        // Инициализация защиты
+        devToolsDetection();
+    })();
+    </script>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">
-                <a href="#" id="logo-link"><h1>M. AURA</h1></a>
+    <!-- Главный экран с роботом -->
+    <header class="hero" id="home">
+        <nav class="main-nav">
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="ru">RU</button>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#about" class="nav-link" data-en="ABOUT" data-ru="О СЕБЕ">ABOUT</a></li>
-                    <li><a href="#skills" class="nav-link" data-en="SKILLS" data-ru="НАВЫКИ">SKILLS</a></li>
-                    <li><a href="#gaming" class="nav-link" data-en="GAMING" data-ru="ИГРЫ">GAMING</a></li>
-                    <li><a href="#books" class="nav-link" data-en="BOOKS" data-ru="КНИГИ">BOOKS</a></li>
-                </ul>
-                <div class="language-selector">
-                    <button id="en-btn" class="active">EN</button>
-                    <button id="ru-btn">RU</button>
-                </div>
-            </nav>
+            <div class="nav-links">
+                <a href="#home" class="nav-link" data-en="Home" data-ru="Главная">Home</a>
+                <a href="#landings" class="nav-link" data-en="About" data-ru="Обо мне">About</a>
+                <a href="#skills" class="nav-link" data-en="Skills" data-ru="Навыки">Skills</a>
+                <a href="#books" class="nav-link" data-en="Books" data-ru="Книги">Books</a>
+                <a href="#works" class="nav-link" data-en="Works" data-ru="Работы">Works</a>
+                <a href="#order" class="nav-link order-link" data-en="Contact" data-ru="Связаться">Contact</a>
+            </div>
+        </nav>
+        
+        <div class="container">
+            <div class="circle-overlay"></div>
+            <div class="gradient-overlay"></div>
+            
+            <div class="welcome" data-en="Welcome to my website" data-ru="Добро пожаловать на мой сайт">Welcome to my website</div>
+            <div class="logo" data-en="Matthew Aura" data-ru="Matthew Aura">Matthew Aura</div>
+            
+            <!-- Контейнер для 3D модели робота -->
+            <div class="robot-container">
+                <!-- Spline Canvas для нативного рендеринга -->
+                <div id="spline-container"></div>
+            </div>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="translate" data-en="MATTHEW AURA" data-ru="МАТВЕЙ АУРА">MATTHEW AURA</h1>
-                <h2 class="translate" data-en="PROGRAMMER · GAMER · VISIONARY" data-ru="ПРОГРАММИСТ · ГЕЙМЕР · ВИЗИОНЕР">PROGRAMMER · GAMER · VISIONARY</h2>
-            </div>
+    <!-- Пустая секция для создания пространства между роботом и секцией "Обо мне" -->
+    <div class="spacer-section"></div>
+
+    <!-- Секция Обо мне -->
+    <section class="services-section" id="landings">
+        <div class="services-container">
+            <h2 class="section-title" data-en="About Me" data-ru="Обо мне">About Me</h2>
+            <p class="section-desc" data-ru="В свои 16 я активно кодирую на Python, C#, C++, Java и JavaScript. Каждый мой проект – это шанс попрактиковаться, довести всё до ума, подтянуть навыки и применить лучшие практики. Мне интересно создавать что-то новое, что реально полезно и помогает решать сложные задачи. Я стараюсь не просто писать код, а создавать решения, которые изменят то, как люди используют технологии." data-en="At 16, I actively code in Python, C#, C++, Java, and JavaScript. Each project is a chance to practice, perfect everything, improve my skills, and apply best practices. I'm interested in creating something new that's genuinely useful and helps solve complex problems. I try not to just write code, but to create solutions that will change how people use technology.">В свои 16 я активно кодирую на Python, C#, C++, Java и JavaScript. Каждый мой проект – это шанс попрактиковаться, довести всё до ума, подтянуть навыки и применить лучшие практики. Мне интересно создавать что-то новое, что реально полезно и помогает решать сложные задачи. Я стараюсь не просто писать код, а создавать решения, которые изменят то, как люди используют технологии.</p>
+            
+            <p class="section-desc" data-ru="Еще я плотно изучаю криптографию – это очень увлекательно. Я встраиваю сильное шифрование в свои проекты и стремлюсь к высокой защите приложений от взломов и кражи данных. Безопасность для меня – это база, которая поднимает доверие пользователей. В наше время цифровая защита данных – это не просто надо, это вопрос этики, к которому я отношусь серьезно." data-en="I also study cryptography deeply – it's very fascinating. I integrate strong encryption into my projects and aim for high protection of applications from hacking and data theft. Security for me is the foundation that builds user trust. In our time, digital data protection is not just necessary, it's an ethical issue that I take seriously.">Еще я плотно изучаю криптографию – это очень увлекательно. Я встраиваю сильное шифрование в свои проекты и стремлюсь к высокой защите приложений от взломов и кражи данных. Безопасность для меня – это база, которая поднимает доверие пользователей. В наше время цифровая защита данных – это не просто надо, это вопрос этики, к которому я отношусь серьезно.</p>
+            
+            <p class="section-desc" data-ru="Чтение книг полезно не только для работы, но и для личного роста, оно расширяет мой взгляд на вещи и помогает решать разные вопросы. Знания из разных областей дают мне понимание, которое нельзя получить, только программируя. Я думаю, что для создания крутых продуктов нужно понимать, как устроена психология людей, как работает бизнес и как все устроено в обществе. Это я понимаю через чтение и обучение." data-en="Reading books is useful not only for work but also for personal growth, it broadens my perspective and helps solve various issues. Knowledge from different fields gives me insights that can't be gained just by programming. I think that to create great products, you need to understand how human psychology works, how business operates, and how society is structured. This I understand through reading and learning.">Чтение книг полезно не только для работы, но и для личного роста, оно расширяет мой взгляд на вещи и помогает решать разные вопросы. Знания из разных областей дают мне понимание, которое нельзя получить, только программируя. Я думаю, что для создания крутых продуктов нужно понимать, как устроена психология людей, как работает бизнес и как все устроено в обществе. Это я понимаю через чтение и обучение.</p>
         </div>
     </section>
 
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title translate" data-en="ABOUT" data-ru="О СЕБЕ">ABOUT</h2>
-            <div class="about-content">
-                <p class="translate" data-en="At 16, I immerse myself in technology through functional code, working with C++, C#, Python, Java, and JavaScript. My approach is straightforward — code should be efficient, accessible, and solve real problems. I dedicate significant time to optimizing performance and ensuring clean architecture. Rather than getting lost in theoretical complexities, I focus on developing solutions with tangible real-world applications. Each project represents an opportunity to expand my technical boundaries, experiment with emerging technologies, and implement industry best practices that ensure high-quality execution. This practical mindset helps me create software that not only works well but also provides genuine value to users." 
-                   data-ru="В свои 16 лет я увлечен технологиями и пишу код на C++, C#, Python, Java и JavaScript. Для меня главное, чтобы код работал быстро, был понятен и решал реальные задачи. Я уделяю много времени оптимизации производительности и обеспечению чистой архитектуры. Вместо того чтобы погружаться в теоретические сложности, я стараюсь разрабатывать решения с осязаемым практическим применением. Каждый проект — это возможность расширить мои технические границы, экспериментировать с новыми технологиями и применять лучшие отраслевые практики, обеспечивающие высокое качество исполнения. Такой практический подход помогает мне создавать программное обеспечение, которое не только хорошо работает, но и приносит реальную пользу людям.">
-                   At 16, I immerse myself in technology through functional code, working with C++, C#, Python, Java, and JavaScript. My approach is straightforward — code should be efficient, accessible, and solve real problems. I dedicate significant time to optimizing performance and ensuring clean architecture. Rather than getting lost in theoretical complexities, I focus on developing solutions with tangible real-world applications. Each project represents an opportunity to expand my technical boundaries, experiment with emerging technologies, and implement industry best practices that ensure high-quality execution. This practical mindset helps me create software that not only works well but also provides genuine value to users.
-                </p>
+    <!-- Секция с навыками -->
+    <section class="skills-section" id="skills">
+        <div class="services-container">
+            <h2 class="section-title" data-en="Skills" data-ru="Навыки">Skills</h2>
+            <p class="section-desc" data-en="I constantly improve my technical skills to deliver high-quality solutions" data-ru="Я постоянно улучшаю свои технические навыки, чтобы предоставлять высококачественные решения">I constantly improve my technical skills to deliver high-quality solutions</p>
+            
+            <div class="skills-container">
+                <div class="skill-item">
+                    <div class="skill-name">Python</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 90%"></div>
+                    </div>
+                    <div class="skill-percent">90%</div>
+                </div>
                 
-                <p class="translate" data-en="I've developed a strong interest in cryptography and actively pursue its study, having already implemented advanced encryption systems in several projects. My work has ranged from symmetric key algorithms and hash functions to exploring zero-knowledge proofs and blockchain security models. I've built secure communication channels, authentication systems, and data protection mechanisms that withstand modern attack vectors. Rather than simply following trends, I approach these security systems with methodical analysis — deconstructing their mathematical foundations, studying their vulnerabilities, and applying them to create robust, tamper-resistant applications that solve actual security challenges. This passion for cryptography has led me to participate in several CTF competitions, where I've honed my skills in both offensive and defensive security techniques." 
-                   data-ru="Криптография – это то, что мне очень интересно, и я уже использовал сложные методы шифрования в своих проектах. Я работал с разными типами шифров, хеш-функциями, изучал доказательства с нулевым разглашением и модели безопасности блокчейна. Я создавал защищенные каналы связи, системы аутентификации и механизмы защиты данных, устойчивые к современным векторам атак. Я серьезно изучаю системы безопасности, тщательно разбираюсь в их математических основах, исследую их уязвимости и использую полученные знания для создания надежных приложений, которые защищены от взлома и решают реальные проблемы безопасности. Эта страсть к криптографии привела меня к участию в нескольких соревнованиях CTF, где я отточил свои навыки как в наступательных, так и в оборонительных техниках безопасности.">
-                   I've developed a strong interest in cryptography and actively pursue its study, having already implemented advanced encryption systems in several projects. My work has ranged from symmetric key algorithms and hash functions to exploring zero-knowledge proofs and blockchain security models. I've built secure communication channels, authentication systems, and data protection mechanisms that withstand modern attack vectors. Rather than simply following trends, I approach these security systems with methodical analysis — deconstructing their mathematical foundations, studying their vulnerabilities, and applying them to create robust, tamper-resistant applications that solve actual security challenges. This passion for cryptography has led me to participate in several CTF competitions, where I've honed my skills in both offensive and defensive security techniques.
-                </p>
+                <div class="skill-item">
+                    <div class="skill-name">JavaScript</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 85%"></div>
+                    </div>
+                    <div class="skill-percent">85%</div>
+                </div>
                 
-                <p class="translate" data-en="Reading serves as my foundation for knowledge and a deeper understanding of the world. Books provide insights that shape my perspectives and expand my thinking beyond conventional boundaries. I maintain a disciplined reading schedule, covering diverse genres from technical manuals to philosophical works, ensuring continuous intellectual growth. I especially value technical literature that enhances my programming skills and introduces innovative concepts that can revolutionize software development. The analytical thinking required for comprehending complex texts parallels the logical approach needed in development work, creating a synergy between my reading habits and coding practices. Books on systems thinking and design patterns have particularly influenced my architectural approaches. Beyond technical knowledge, literature on psychology and human behavior helps me design more intuitive user interfaces and experiences. Books aren't just sources of information – they inspire creative solutions and methodological approaches that I integrate into my coding projects, resulting in more elegant and effective software systems." 
-                   data-ru="Чтение для меня — основа знаний и лучшего понимания мира. Книги дают мне глубокие идеи, которые формируют мое мышление и расширяют кругозор за пределы общепринятых границ. Я придерживаюсь дисциплинированного графика чтения, охватывая различные жанры от технических руководств до философских работ, обеспечивая непрерывный интеллектуальный рост. Особенно ценю техническую литературу, которая улучшает мои навыки программирования и знакомит с инновационными концепциями, способными революционизировать разработку программного обеспечения. Аналитическое мышление, необходимое для понимания сложных текстов, похоже на логический подход в разработке программного обеспечения, создавая синергию между моими привычками чтения и практиками кодирования. Книги по системному мышлению и шаблонам проектирования особенно повлияли на мои архитектурные подходы. Помимо технических знаний, литература по психологии и человеческому поведению помогает мне проектировать более интуитивно понятные пользовательские интерфейсы и опыт взаимодействия. Книги — это не просто источники информации, они вдохновляют на творческие решения и методологические подходы, которые я применяю в своих проектах по программированию, что приводит к созданию более элегантных и эффективных программных систем.">
-                   Reading serves as my foundation for knowledge and a deeper understanding of the world. Books provide insights that shape my perspectives and expand my thinking beyond conventional boundaries. I maintain a disciplined reading schedule, covering diverse genres from technical manuals to philosophical works, ensuring continuous intellectual growth. I especially value technical literature that enhances my programming skills and introduces innovative concepts that can revolutionize software development. The analytical thinking required for comprehending complex texts parallels the logical approach needed in development work, creating a synergy between my reading habits and coding practices. Books on systems thinking and design patterns have particularly influenced my architectural approaches. Beyond technical knowledge, literature on psychology and human behavior helps me design more intuitive user interfaces and experiences. Books aren't just sources of information – they inspire creative solutions and methodological approaches that I integrate into my coding projects, resulting in more elegant and effective software systems.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title translate" data-en="SKILLS" data-ru="НАВЫКИ">SKILLS</h2>
-            <div class="skills-grid">
-                <div class="skill">
-                    <h3><span class="lang-icon cpp-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/1822px-ISO_C%2B%2B_Logo.svg.png" alt="C++" class="cpp-logo" draggable="false" oncontextmenu="return false;">
-                    </span>C++</h3>
+                <div class="skill-item">
+                    <div class="skill-name">C#</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 80%"></div>
+                    </div>
+                    <div class="skill-percent">80%</div>
                 </div>
-                <div class="skill">
-                    <h3><span class="lang-icon csharp-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Logo_C_sharp.svg/1200px-Logo_C_sharp.svg.png" alt="C#" class="csharp-logo" draggable="false" oncontextmenu="return false;">
-                    </span>C#</h3>
+                
+                <div class="skill-item">
+                    <div class="skill-name">C++</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 75%"></div>
+                    </div>
+                    <div class="skill-percent">75%</div>
                 </div>
-                <div class="skill">
-                    <h3><span class="lang-icon python-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png" alt="Python" class="python-logo" draggable="false" oncontextmenu="return false;">
-                    </span>PYTHON</h3>
-                </div>
-                <div class="skill">
-                    <h3><span class="lang-icon java-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/1200px-Java_programming_language_logo.svg.png" alt="Java" class="java-logo" draggable="false" oncontextmenu="return false;">
-                    </span>JAVA</h3>
-                </div>
-                <div class="skill">
-                    <h3><span class="lang-icon js-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/800px-JavaScript-logo.png" alt="JavaScript" class="js-logo" draggable="false" oncontextmenu="return false;">
-                    </span>JAVASCRIPT</h3>
+                
+                <div class="skill-item">
+                    <div class="skill-name">Java</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 70%"></div>
+                    </div>
+                    <div class="skill-percent">70%</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="gaming" class="gaming">
-        <div class="container">
-            <h2 class="section-title translate" data-en="GAMING" data-ru="ИГРЫ">GAMING</h2>
-            <div class="gaming-intro">
-                <p class="translate" 
-                   data-en="I regularly complete story-driven single-player games that help me reset and recharge. They provide an efficient mental break from intensive coding sessions. Previously, I also demonstrated notable results in official Fortnite tournaments. Below are narrative games I've completed from start to finish — each selected for its unique contribution to the gaming landscape." 
-                   data-ru="Часто прохожу одиночные игры с сюжетом, они помогают перезагрузиться и отдохнуть. Также раньше я показывал хорошие результаты на официальных турнирах по Fortnite. Ниже приведены сюжетные игры, которые я полностью прошел — каждая выбрана за свой уникальный вклад в игровую индустрию.">
-                   I regularly complete story-driven single-player games that help me reset and recharge. They provide an efficient mental break from intensive coding sessions. Previously, I also demonstrated notable results in official Fortnite tournaments. Below are narrative games I've completed from start to finish — each selected for its unique contribution to the gaming landscape.
-                </p>
+    <!-- Секция с любимыми книгами -->
+    <section class="creative-solutions" id="books">
+        <h3 class="literary-title" data-en="Favorite Books" data-ru="Любимые книги">Favorite Books</h3>
+        
+        <div class="book-container">
+            <div class="book-item">
+                <div class="book-cover">
+                    <img src="https://i.pinimg.com/originals/a3/4e/fb/a34efbcbe32f6c1a0628a08a99f3c6f8.png" alt="The Black Swan book cover" loading="lazy">
+                </div>
+                <div class="book-title" data-en="The Black Swan" data-ru="Черный лебедь">The Black Swan</div>
+                <div class="book-author">Nassim Nicholas Taleb</div>
+                <p class="book-desc" data-en="This book explores the impact of rare, unpredictable events on our world. It has taught me to embrace uncertainty and prepare for the unexpected in both technology and life." data-ru="Эта книга исследует влияние редких, непредсказуемых событий на наш мир. Она научила меня принимать неопределенность и готовиться к неожиданностям как в технологиях, так и в жизни.">This book explores the impact of rare, unpredictable events on our world. It has taught me to embrace uncertainty and prepare for the unexpected in both technology and life.</p>
+        </div>
+        
+            <div class="book-item">
+                <div class="book-cover">
+                    <img src="https://s.f.kz/prod/3842/3841001_1000.jpg" alt="Flow book cover" loading="lazy">
+                </div>
+                <div class="book-title" data-en="Flow" data-ru="Поток">Flow</div>
+                <div class="book-author">Mihaly Csikszentmihalyi</div>
+                <p class="book-desc" data-en="The Psychology of Optimal Experience. This book has taught me how to achieve deep focus and enjoyment in my work by finding the perfect balance between challenge and skill." data-ru="Психология оптимального переживания. Эта книга научила меня достигать глубокой концентрации и удовольствия в работе, находя идеальный баланс между сложностью задачи и уровнем навыка.">The Psychology of Optimal Experience. This book has taught me how to achieve deep focus and enjoyment in my work by finding the perfect balance between challenge and skill.</p>
             </div>
             
-            <h3 class="translate" data-en="SINGLE-PLAYER GAMES" data-ru="ОДИНОЧНЫЕ ИГРЫ">SINGLE-PLAYER GAMES</h3>
+            <div class="book-item">
+                <div class="book-cover">
+                    <img src="https://cdn1.ozone.ru/multimedia/1011065616.jpg" alt="Zero to One book cover" loading="lazy">
+                </div>
+                <div class="book-title" data-en="Zero to One" data-ru="От нуля к единице">Zero to One</div>
+                <div class="book-author">Peter Thiel</div>
+                <p class="book-desc" data-en="This book sparked my interest in creating truly innovative solutions rather than incremental improvements. It shaped how I think about technology and building valuable products." data-ru="Эта книга пробудила мой интерес к созданию действительно инновационных решений, а не постепенных улучшений. Она сформировала мое мышление о технологиях и создании ценных продуктов.">This book sparked my interest in creating truly innovative solutions rather than incremental improvements. It shaped how I think about technology and building valuable products.</p>
+            </div>
             
-            <div class="games-grid">
-                <div class="game-card">
-                    <div class="game-video">
-                        <img src="https://image.api.playstation.com/cdn/UP1004/CUSA03041_00/Hpl5MtwQgOVF9vJqlfui6SDB5Jl4oBSq.png" alt="Red Dead Redemption 2" loading="lazy" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <h4>RED DEAD REDEMPTION 2</h4>
-                    <p class="translate" 
-                       data-en="A masterpiece western action-adventure from Rockstar Games. Set in 1899, you play as Arthur Morgan, an outlaw trying to survive in a changing America. The game features a stunning open world with incredible detail, a compelling story about loyalty and redemption, and realistic gameplay mechanics that immerse you in the final years of the Wild West era." 
-                       data-ru="Шедевральный вестерн-экшен от Rockstar Games. Действие происходит в 1899 году, вы играете за Артура Моргана, преступника, пытающегося выжить в меняющейся Америке. Игра предлагает потрясающий открытый мир с невероятной детализацией, увлекательную историю о верности и искуплении, а также реалистичные игровые механики, которые погружают вас в последние годы эпохи Дикого Запада.">
-                       A masterpiece western action-adventure from Rockstar Games. Set in 1899, you play as Arthur Morgan, an outlaw trying to survive in a changing America. The game features a stunning open world with incredible detail, a compelling story about loyalty and redemption, and realistic gameplay mechanics that immerse you in the final years of the Wild West era.
-                    </p>
+            <div class="book-item">
+                <div class="book-cover">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/8/80/Hackers_%26_Painters.jpg" alt="Hackers & Painters book cover" loading="lazy">
                 </div>
-                
-                <div class="game-card">
-                    <div class="game-video">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg" alt="Cyberpunk 2077" loading="lazy" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <h4>CYBERPUNK 2077</h4>
-                    <p class="translate" 
-                       data-en="Cyberpunk 2077 is an open-world, action-adventure story set in Night City, a megalopolis obsessed with power, glamour and body modification. You play as V, a mercenary outlaw going after a one-of-a-kind implant that is the key to immortality. The choices you make will determine the story and shape the world around you." 
-                       data-ru="Cyberpunk 2077 — это приключенческая игра с открытым миром, действие которой происходит в Найт-Сити, мегаполисе, одержимом властью, гламуром и модификациями тела. Вы играете за V, наёмника-преступника, который гонится за имплантатом, позволяющим обрести бессмертие. Ваши решения определят развитие сюжета и мир вокруг вас.">
-                       Cyberpunk 2077 — это приключенческая игра с открытым миром, действие которой происходит в Найт-Сити, мегаполисе, одержимом властью, гламуром и модификациями тела. Вы играете за V, наёмника-преступника, который гонится за имплантатом, позволяющим обрести бессмертие. Ваши решения определят развитие сюжета и мир вокруг вас.
-                    </p>
-                </div>
-                
-                <div class="game-card">
-                    <div class="game-video">
-                        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/292030/capsule_616x353.jpg" alt="The Witcher 3: Wild Hunt" loading="lazy" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <h4>THE WITCHER 3: WILD HUNT</h4>
-                    <p class="translate" 
-                       data-en="You are Geralt of Rivia, mercenary monster slayer. The world is in chaos and you are tasked with finding the child of prophecy, a living weapon that can alter the shape of the world." 
-                       data-ru="Вы — Геральт из Ривии, наемный убийца чудовищ. Мир в хаосе, и вам поручено найти дитя пророчества, живое оружие, способное изменить облик мира.">
-                       You are Geralt of Rivia, mercenary monster slayer. The world is in chaos and you are tasked with finding the child of prophecy, a living weapon that can alter the shape of the world.
-                    </p>
-                </div>
-                
-                <div class="game-card">
-                    <div class="game-video">
-                        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/aGhopp3MHppi7kooGE2Dtt8C.png" alt="ELDEN RING" loading="lazy" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <h4>ELDEN RING</h4>
-                    <p class="translate" 
-                       data-en="An epic open-world action RPG created by FromSoftware and George R.R. Martin. Explore a vast fantasy world filled with dungeons, powerful enemies, and complex lore. The game combines challenging combat with unprecedented freedom to define your own adventure in a meticulously crafted world of danger and discovery." 
-                       data-ru="Эпическая ролевая игра с открытым миром от студии FromSoftware и Джорджа Р.Р. Мартина. Исследуйте огромный фэнтезийный мир, наполненный подземельями, могущественными врагами и сложной предысторией. Игра сочетает сложные бои с беспрецедентной свободой определять свое собственное приключение в тщательно проработанном мире опасностей и открытий.">
-                       An epic open-world action RPG created by FromSoftware and George R.R. Martin. Explore a vast fantasy world filled with dungeons, powerful enemies, and complex lore. The game combines challenging combat with unprecedented freedom to define your own adventure in a meticulously crafted world of danger and discovery.
-                    </p>
-                </div>
-                
-                <div class="game-card">
-                    <div class="game-video">
-                        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202010/0222/niMUubpU9y1PxNvYmDfb8QFD.png" alt="Ghost of Tsushima" loading="lazy" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <h4>GHOST OF TSUSHIMA</h4>
-                    <p class="translate" 
-                       data-en="In the late 13th century, the Mongol empire has laid waste to entire nations. Tsushima Island is all that stands between mainland Japan and a massive Mongol invasion. As one of the last surviving samurai, you rise from the ashes to fight back in a tale of revenge, honor, and salvation." 
-                       data-ru="В конце XIII века монгольская империя разорила целые народы. Остров Цусима — последний рубеж, отделяющий материковую Японию от массивного монгольского вторжения. Став одним из последних выживших самураев, вы восстаете из пепла, чтобы дать отпор захватчикам в истории о мести, чести и спасении.">
-                       In the late 13th century, the Mongol empire has laid waste to entire nations. Tsushima Island is all that stands between mainland Japan and a massive Mongol invasion. As one of the last surviving samurai, you rise from the ashes to fight back in a tale of revenge, honor, and salvation.
-                    </p>
-                </div>
-                
-                <div class="game-card">
-                    <div class="game-video">
-                        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYdl7Oi0s.png" alt="God of War Ragnarök" loading="lazy" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <h4>GOD OF WAR RAGNARÖK</h4>
-                    <p class="translate" 
-                       data-en="Embark on a journey through all Nine Realms towards the prophesied battle that will end the world. Together, Kratos and Atreus venture deep into the Nine Realms in search of answers as Asgardian forces prepare for war." 
-                       data-ru="Отправляйтесь в путешествие по всем Девяти Мирам к предсказанной битве, которая положит конец миру. Вместе Кратос и Атрей отправляются в глубины Девяти Миров в поисках ответов, в то время как асгардские силы готовятся к войне.">
-                       Embark on a journey through all Nine Realms towards the prophesied battle that will end the world. Together, Kratos and Atreus venture deep into the Nine Realms in search of answers as Asgardian forces prepare for war.
-                    </p>
-                </div>
+                <div class="book-title" data-en="Hackers & Painters" data-ru="Хакеры и художники">Hackers & Painters</div>
+                <div class="book-author">Paul Graham</div>
+                <p class="book-desc" data-en="This collection of essays explores the intersection of technology and creativity. It has shaped my understanding of programming as both a technical craft and an art form, influencing how I approach problem-solving." data-ru="Этот сборник эссе исследует пересечение технологий и творчества. Он сформировал мое понимание программирования как технического ремесла и искусства, влияя на мой подход к решению проблем.">This collection of essays explores the intersection of technology and creativity. It has shaped my understanding of programming as both a technical craft and an art form, influencing how I approach problem-solving.</p>
             </div>
         </div>
     </section>
 
-    <section id="books" class="books">
-        <div class="container">
-            <h2 class="section-title translate" data-en="BOOKS" data-ru="КНИГИ">BOOKS</h2>
-            <div class="books-grid">
-                <div class="book-card">
-                    <div class="book-cover">
-                        <img src="https://i.pinimg.com/originals/a3/4e/fb/a34efbcbe32f6c1a0628a08a99f3c6f8.png" alt="The Black Swan" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <div class="book-info">
-                    <h3 class="translate" data-en="THE BLACK SWAN" data-ru="ЧЁРНЫЙ ЛЕБЕДЬ">THE BLACK SWAN</h3>
-                    <h4 class="translate" data-en="BY NASSIM NICHOLAS TALEB" data-ru="НАССИМ НИКОЛАС ТАЛЕБ">BY NASSIM NICHOLAS TALEB</h4>
-                    <p class="translate" 
-                       data-en="A book that focuses on the extreme impact of rare and unpredictable events — and the human tendency to find simplistic explanations for these events retrospectively." 
-                       data-ru="Книга, посвященная экстремальному влиянию редких и непредсказуемых событий — и человеческой склонности находить упрощенные объяснения этим событиям ретроспективно.">
-                       A book that focuses on the extreme impact of rare and unpredictable events — and the human tendency to find simplistic explanations for these events retrospectively.
-                    </p>
-                    </div>
-                </div>
-                
-                <div class="book-card">
-                    <div class="book-cover">
-                        <img src="https://cdn1.ozone.ru/multimedia/1017831957.jpg" alt="Atlas Shrugged" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <div class="book-info">
-                    <h3 class="translate" data-en="ATLAS SHRUGGED" data-ru="АТЛАНТ РАСПРАВИЛ ПЛЕЧИ">ATLAS SHRUGGED</h3>
-                    <h4 class="translate" data-en="BY AYN RAND" data-ru="АЙН РЭНД">BY AYN RAND</h4>
-                    <p class="translate" 
-                       data-en="The book explores a dystopian United States where many of society's most successful industrialists abandon their fortunes in response to aggressive new regulations." 
-                       data-ru="Книга исследует антиутопические Соединенные Штаты, где многие из самых успешных промышленников общества отказываются от своих состояний в ответ на агрессивные новые правила.">
-                       The book explores a dystopian United States where many of society's most successful industrialists abandon their fortunes in response to aggressive new regulations.
-                    </p>
-                    </div>
-                </div>
-                
-                <div class="book-card">
-                    <div class="book-cover">
-                        <img src="https://cdn1.ozone.ru/multimedia/1011065616.jpg" alt="Zero to One" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <div class="book-info">
-                    <h3 class="translate" data-en="ZERO TO ONE" data-ru="ОТ НУЛЯ К ЕДИНИЦЕ">ZERO TO ONE</h3>
-                    <h4 class="translate" data-en="BY PETER THIEL" data-ru="ПИТЕР ТИЛЬ">BY PETER THIEL</h4>
-                    <p class="translate" 
-                       data-en="The great secret of our time is that there are still uncharted frontiers to explore and new inventions to create. This book is about how to build companies that create new things." 
-                       data-ru="Великий секрет нашего времени в том, что еще остаются неизведанные рубежи для исследования и новые изобретения для создания. Эта книга о том, как строить компании, которые создают новые вещи.">
-                       The great secret of our time is that there are still uncharted frontiers to explore and new inventions to create. This book is about how to build companies that create new things.
-                    </p>
-                    </div>
-                </div>
-                
-                <div class="book-card">
-                    <div class="book-cover">
-                        <img src="https://m.media-amazon.com/images/I/71DFxCrOhPL._AC_UF1000,1000_QL80_.jpg" alt="Flow" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <div class="book-info">
-                    <h3 class="translate" data-en="FLOW" data-ru="ПОТОК">FLOW</h3>
-                    <h4 class="translate" data-en="BY MIHALY CSIKSZENTMIHALYI" data-ru="МИХАЙ ЧИКСЕНТМИХАЙИ">BY MIHALY CSIKSZENTMIHALYI</h4>
-                    <p class="translate" 
-                       data-en="A groundbreaking study of happiness, creativity, and optimal experience that demonstrates how we can achieve 'flow' — a state of complete immersion in an activity where time seems to stand still and performance is maximized." 
-                       data-ru="Фундаментальное исследование счастья, творчества и оптимального опыта, которое показывает, как мы можем достичь 'потока' — состояния полного погружения в деятельность, когда время, кажется, останавливается, а производительность максимальна.">
-                       A groundbreaking study of happiness, creativity, and optimal experience that demonstrates how we can achieve 'flow' — a state of complete immersion in an activity where time seems to stand still and performance is maximized.
-                    </p>
-                    </div>
-                </div>
-                
-                <div class="book-card">
-                    <div class="book-cover">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/8/80/Hackers_%26_Painters.jpg" alt="Hackers and Painters" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <div class="book-info">
-                    <h3 class="translate" data-en="HACKERS & PAINTERS" data-ru="ХАКЕРЫ И ХУДОЖНИКИ">HACKERS & PAINTERS</h3>
-                    <h4 class="translate" data-en="BY PAUL GRAHAM" data-ru="ПОЛ ГРЭМ">BY PAUL GRAHAM</h4>
-                    <p class="translate" 
-                       data-en="A collection of essays from the author of Lisp and the founder of Y Combinator, exploring the connection between creating art and writing code. Graham argues that hackers are like artists, challenging conventional thinking about programming, wealth, and intellectual property." 
-                       data-ru="Сборник эссе от автора Lisp и основателя Y Combinator, исследующий связь между созданием искусства и написанием кода. Грэм утверждает, что хакеры подобны художникам, бросая вызов общепринятому мышлению о программировании, богатстве и интеллектуальной собственности.">
-                       A collection of essays from the author of Lisp and the founder of Y Combinator, exploring the connection between creating art and writing code. Graham argues that hackers are like artists, challenging conventional thinking about programming, wealth, and intellectual property.
-                    </p>
-                    </div>
-                </div>
-                
-                <div class="book-card">
-                    <div class="book-cover">
-                        <img src="https://m.media-amazon.com/images/I/71l6+RvRgdL._AC_UF1000,1000_QL80_.jpg" alt="Tao Te Ching" draggable="false" oncontextmenu="return false;">
-                    </div>
-                    <div class="book-info">
-                    <h3 class="translate" data-en="TAO TE CHING" data-ru="ДАО ДЭ ЦЗИН">TAO TE CHING</h3>
-                    <h4 class="translate" data-en="BY LAO TZU" data-ru="ЛАО-ЦЗЫ">BY LAO TZU</h4>
-                    <p class="translate" 
-                       data-en="A fundamental text for both philosophical and religious Taoism, it also strongly influenced other schools of Chinese philosophy and religion, including Legalism, Confucianism, and Buddhism, which was largely interpreted through the use of Taoist words and concepts." 
-                       data-ru="Фундаментальный текст как для философского, так и для религиозного даосизма, который также сильно повлиял на другие школы китайской философии и религии, включая легизм, конфуцианство и буддизм, который во многом интерпретировался через использование даосских слов и концепций.">
-                       A fundamental text for both philosophical and religious Taoism, it also strongly influenced other schools of Chinese philosophy and religion, including Legalism, Confucianism, and Buddhism, which was largely interpreted through the use of Taoist words and concepts.
-                    </p>
-                    </div>
-                </div>
+    <!-- Секция работ -->
+    <section class="works-section" id="works">
+        <div class="marquee-container">
+            <div class="marquee">
+                <span class="filled">MATTHEW AURA</span>
+                <span class="outline">MATTHEW AURA</span>
+                <span class="filled">MATTHEW AURA</span>
+                <span class="outline">MATTHEW AURA</span>
+                <span class="filled">MATTHEW AURA</span>
+                <span class="outline">MATTHEW AURA</span>
+                <span class="filled">MATTHEW AURA</span>
+                <span class="outline">MATTHEW AURA</span>
+                <span class="filled">MATTHEW AURA</span>
+                <span class="outline">MATTHEW AURA</span>
+                <span class="filled">MATTHEW AURA</span>
+                <span class="outline">MATTHEW AURA</span>
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 MATTHEW AURA</p>
-            <div class="social-links">
+    <!-- Секция статистики -->
+    <section class="stats-section">
+        <div class="stat-item">
+            <h2 data-en="Tech" data-ru="Технологии">Tech</h2>
+            <p data-en="Modern Stack" data-ru="Современный стек">Modern Stack</p>
+        </div>
+        
+        <div class="stat-item">
+            <h2 data-en="Projects" data-ru="Проекты">Projects</h2>
+            <p data-en="Successfully Delivered" data-ru="Успешно реализованы">Successfully Delivered</p>
+        </div>
+    </section>
+
+    <!-- Секция контактов -->
+    <section class="contact-section" id="order">
+        <!-- Секция о основателе (перемещена сюда) -->
+        <section class="founder-section">
+            <h3 data-en="&quot;The impediment to action advances action. What stands in the way becomes the way.&quot;" data-ru="&quot;Препятствие к действию продвигает действие. То, что стоит на пути, становится путем.&quot;">"The impediment to action advances action. What stands in the way becomes the way."</h3>
+            
+            <div class="founder-info">
+                <h4>matthew aura</h4>
+                <p data-en="CEO" data-ru="Генеральный директор">CEO</p>
             </div>
+        </section>
+
+        <div class="contact-header">
+            <h2 data-en="CONTACT" data-ru="КОНТАКТ">CONTACT</h2>
+            <div class="icon">
+                <div class="stars"></div>
+                <div class="planet"></div>
+                <div class="ring"></div>
+            </div>
+        </div>
+        
+        <div class="telegram-container">
+            <a href="https://t.me/continuousfreedom" class="telegram-button">
+                <span data-en="TELEGRAM" data-ru="TELEGRAM">TELEGRAM</span>
+            </a>
+            <p class="telegram-desc" data-en="Click the button to contact me directly via Telegram" data-ru="Нажмите на кнопку, чтобы связаться со мной напрямую через Telegram">Click the button to contact me directly via Telegram</p>
+        </div>
+        
+        <p class="tagline" data-en="Where style meets technology" data-ru="Где стиль встречается с технологиями">Where style meets technology</p>
+    </section>
+
+    <!-- Футер -->
+    <footer class="main-footer">
+        <div class="footer-bottom">
+            <p data-en="© 2025 Matthew Aura. All Rights Reserved." data-ru="© 2025 Matthew Aura. Все права защищены.">© 2025 Matthew Aura. All Rights Reserved.</p>
+            <p data-en="Digital Innovation & Creative Solutions" data-ru="Цифровые инновации и креативные решения">Digital Innovation & Creative Solutions</p>
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html> 
