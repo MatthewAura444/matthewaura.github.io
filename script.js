@@ -322,47 +322,65 @@ function initLanguageSwitcher() {
     changeLanguage(savedLang);
 }
 
-// Мобильное меню
+// Инициализация мобильного меню с улучшенной поддержкой для телефонов
 function initMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
     
-    if (!mobileMenuBtn) return; // Выход если кнопка не найдена
+    if (!mobileMenuBtn || !navLinks) return; // Выход если элементы не найдены
     
-    // Обработчик нажатия на кнопку меню
-    mobileMenuBtn.addEventListener('click', () => {
-        mobileMenuBtn.classList.toggle('active');
+    // Удаляем все предыдущие обработчики событий
+    const newMobileBtn = mobileMenuBtn.cloneNode(true);
+    mobileMenuBtn.parentNode.replaceChild(newMobileBtn, mobileMenuBtn);
+    
+    // Добавляем новый обработчик для мобильного меню с поддержкой тач-событий
+    newMobileBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.toggle('active');
         navLinks.classList.toggle('active');
+        
+        if (navLinks.classList.contains('active')) {
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        } else {
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
+        }
+        
+        return false;
     });
+    
+    // Добавляем обработчик для тач-событий
+    newMobileBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        
+        if (navLinks.classList.contains('active')) {
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        } else {
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
+        }
+        
+        return false;
+    }, {passive: false});
     
     // Закрытие мобильного меню при клике по ссылке
     document.querySelectorAll('.nav-links .nav-link').forEach(link => {
         link.addEventListener('click', () => {
-            mobileMenuBtn.classList.remove('active');
+            newMobileBtn.classList.remove('active');
             navLinks.classList.remove('active');
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
         });
     });
     
     // Закрытие меню при изменении ориентации экрана
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
-            mobileMenuBtn.classList.remove('active');
+            newMobileBtn.classList.remove('active');
             navLinks.classList.remove('active');
-        }
-    });
-    
-    // Добавление класса для тела документа при открытом меню
-    mobileMenuBtn.addEventListener('click', () => {
-        if (navLinks.classList.contains('active')) {
-            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
-        } else {
             document.body.style.overflow = ''; // Восстанавливаем прокрутку
         }
-    });
-    
-    // Восстановление прокрутки при изменении размера окна
-    window.addEventListener('resize', () => {
-        document.body.style.overflow = '';
     });
 }
 
@@ -533,26 +551,7 @@ function initSmoothScrolling() {
     });
 }
 
-// Оптимизация для рендеринга страницы
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация системы безопасности
-    SecuritySystem.init();
-    
-    // Инициализируем переключатель языков
-    initLanguageSwitcher();
-    
-    // Инициализируем мобильное меню
-    initMobileMenu();
-    
-    // Инициализируем 3D модель робота
-    initRobot();
-    
-    // Инициализируем полосы навыков
-    initSkillBars();
-    
-    // Инициализируем плавную прокрутку
-    initSmoothScrolling();
-});
+// Этот блок намеренно пропущен, чтобы избежать дублирования инициализации
 
 // Добавляем оптимизации для производительности
 window.addEventListener('load', function() {
@@ -634,9 +633,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация переключателя языков
     initLanguageSwitcher();
     
-    // Инициализация мобильного меню
-    initMobileMenu();
-    
     // Инициализация 3D робота
     initRobot();
     
@@ -652,6 +648,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработка ориентации экрана для мобильных устройств
     handleDeviceOrientation();
     
+    // Инициализация мобильного меню с небольшой задержкой для надежности
+    setTimeout(function() {
+        initMobileMenu();
+    }, 300);
+    
     // Переинициализация при изменении размера окна
     window.addEventListener('resize', function() {
         optimizeRobotForMobile();
@@ -663,7 +664,9 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             optimizeRobotForMobile();
             handleDeviceOrientation();
-        }, 100);
+            // Переинициализация мобильного меню при изменении ориентации
+            initMobileMenu();
+        }, 300);
     });
 });
 
