@@ -1,311 +1,674 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Matthew Aura - Personal Portfolio and Digital Solutions">
-    <meta name="keywords" content="matthew aura, digital portfolio, creative solutions, technology, innovation">
+// Система безопасности для защиты от атак
+const SecuritySystem = {
+    // Настройки безопасности
+    settings: {
+        maxRequestsPerMinute: 300, // Увеличено с 100
+        botDetectionThreshold: 50, // Увеличено с 30
+        suspiciousPatternThreshold: 0.9, // Увеличено с 0.7
+        blockingDuration: 2000, // Уменьшено с 3000
+        verificationTimeout: 1500
+    },
     
-    <!-- Мощные заголовки безопасности -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; script-src 'self' https://unpkg.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https://i.pinimg.com https://s.f.kz https://cdn1.ozone.ru https://upload.wikimedia.org; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; worker-src 'self'; frame-src 'self' https://my.spline.design; object-src 'none';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    // Счетчики и временные метки
+    counters: {
+        requests: 0,
+        suspicious: 0,
+        lastRequestTime: Date.now(),
+        blockedIps: new Set(),
+        attackDetected: false
+    },
     
-    <title>Matthew Aura | Digital Portfolio</title>
-    
-    <!-- Предзагрузка критических ресурсов -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="script.js" as="script">
-    <link rel="preload" href="scene.splinecode" as="fetch" crossorigin>
-    
-    <!-- Подключение Spline Runtime библиотеки с проверкой целостности -->
-    <script type="module" src="https://unpkg.com/@splinetool/runtime@0.9.493/build/spline-runtime.js" integrity="sha384-zrgJt9zGgqXlJ7G8hzOXgKVM+yrd/K8vYfbeHKnFVDO3QRD3sszZBuJPQc2DJk7vy" crossorigin></script>
-    
-    <!-- Предзагрузка робота для мгновенного отображения -->
-    <link rel="preconnect" href="https://my.spline.design" crossorigin>
-    <link rel="prerender" href="https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/">
-    <link rel="prefetch" href="https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/">
-    
-    <!-- Запрос на кэширование робота на стороне браузера -->
-    <meta http-equiv="Cache-Control" content="max-age=86400">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Скрипт защиты от DDoS -->
-    <script>
-    // Базовая защита от автоматического выполнения скриптов
-    (function() {
-        // Проверка на легитимность окружения
-        if (window.self !== window.top) {
-            // Сайт загружен во фрейме - потенциальный clickjacking
-            window.top.location = window.self.location;
-        }
+    // Инициализация системы безопасности
+    init: function() {
+        console.log('[SECURITY] System initialized');
+        this.setupProtection();
+        this.monitorNetwork();
+        this.setupAntiTampering();
         
-        // Проверка на скорость взаимодействия
-        let lastAction = Date.now();
-        let actionCount = 0;
+        // Регулярная очистка счетчиков
+        setInterval(() => this.resetCounters(), 60000);
+    },
+    
+    // Настройка базовой защиты
+    setupProtection: function() {
+        // Защита от XSS (валидация входных данных)
+        this.sanitizeInputs();
         
-        function checkBotActivity() {
-            const now = Date.now();
-            const timeDiff = now - lastAction;
-            
-            // Сброс счетчика если прошло больше 1 секунды
-            if (timeDiff > 1000) {
-                actionCount = 0;
+        // Защита от злонамеренных действий
+        this.monitorUserBehavior();
+        
+        // Защита от атак брутфорса
+        this.preventBruteForce();
+    },
+    
+    // Сканирование и блокировка вредоносных запросов
+    monitorNetwork: function() {
+        // Перехват всех исходящих запросов
+        const originalFetch = window.fetch;
+        const originalXHR = window.XMLHttpRequest.prototype.open;
+        const security = this;
+        
+        // Переопределение fetch для мониторинга
+        window.fetch = function(url, options) {
+            if (security.isRequestBlocked()) {
+                console.warn('[SECURITY] Request blocked due to suspicious activity');
+                return Promise.reject(new Error('Request blocked by security system'));
             }
             
-            // Увеличение счетчика действий
-            actionCount++;
-            lastAction = now;
-            
-            // Если слишком много действий за короткое время - увеличен порог с 30 до 100
-            if (actionCount > 100 && timeDiff < 500) {
-                // Вероятность бота - добавляем задержку
-                console.warn('[SECURITY] High frequency actions detected');
-                // Не блокируем UI, только логируем
-                actionCount = 0;
+            security.counters.requests++;
+            return originalFetch.apply(this, arguments);
+        };
+        
+        // Переопределение XHR для мониторинга
+        window.XMLHttpRequest.prototype.open = function(method, url) {
+            if (security.isRequestBlocked()) {
+                console.warn('[SECURITY] XHR request blocked due to suspicious activity');
+                throw new Error('Request blocked by security system');
             }
             
+            security.counters.requests++;
+            return originalXHR.apply(this, arguments);
+        };
+    },
+    
+    // Проверка, должен ли запрос быть заблокирован
+    isRequestBlocked: function() {
+        const now = Date.now();
+        const timeDiff = now - this.counters.lastRequestTime;
+        
+        // Обнаружение DDoS: слишком много запросов за короткое время
+        if (timeDiff < 1000 && this.counters.requests > this.settings.maxRequestsPerMinute) {
+            this.counters.suspicious++;
+            this.triggerDefense("Potential DDoS detected", true);
             return true;
         }
         
-        // Защита от автоматизированных действий - пассивные слушатели
-        document.addEventListener('mousemove', checkBotActivity, { passive: true });
-        document.addEventListener('click', checkBotActivity, { passive: true });
-        document.addEventListener('keydown', checkBotActivity, { passive: true });
+        // Обновление временной метки
+        this.counters.lastRequestTime = now;
+        return this.counters.attackDetected;
+    },
+    
+    // Активация защитного механизма
+    triggerDefense: function(reason, blockUI = false) {
+        console.warn(`[SECURITY] Defense activated: ${reason}`);
+        this.counters.attackDetected = true;
         
-        // Упрощенное обнаружение инструментов разработчика
-        const devToolsDetection = function() {
-            // Отключаем активное обнаружение, чтобы не мешать разработке
-            window.devToolsOpen = false;
+        // Временная блокировка действий только при критических атаках
+        if (blockUI) {
+            document.documentElement.style.pointerEvents = 'none';
+            
+            // Восстановление через заданное время
+            setTimeout(() => {
+                document.documentElement.style.pointerEvents = 'auto';
+                console.log('[SECURITY] UI access restored');
+            }, this.settings.blockingDuration);
+        }
+        
+        // Сброс флага атаки через заданное время
+        setTimeout(() => {
+            this.counters.attackDetected = false;
+            console.log('[SECURITY] Defense deactivated');
+        }, this.settings.blockingDuration);
+    },
+    
+    // Сброс счетчиков безопасности
+    resetCounters: function() {
+        this.counters.requests = 0;
+        this.counters.suspicious = 0;
+    },
+    
+    // Мониторинг поведения пользователя для выявления ботов
+    monitorUserBehavior: function() {
+        let mouseMovements = 0;
+        let keyPresses = 0;
+        let lastActivityTime = Date.now();
+        
+        // Мониторинг движений мыши
+        document.addEventListener('mousemove', () => {
+            mouseMovements++;
+            lastActivityTime = Date.now();
+        }, { passive: true });
+        
+        // Мониторинг нажатий клавиш
+        document.addEventListener('keydown', () => {
+            keyPresses++;
+            lastActivityTime = Date.now();
+        }, { passive: true });
+        
+        // Периодическая проверка паттернов поведения
+        setInterval(() => {
+            const now = Date.now();
+            
+            // Проверка на естественную активность - более мягкие условия
+            if ((mouseMovements === 0 && keyPresses > 50) || 
+                (mouseMovements > 300 && now - lastActivityTime < 200)) {
+                this.counters.suspicious++;
+                
+                if (this.counters.suspicious > this.settings.botDetectionThreshold) {
+                    // Только логируем подозрительное поведение, не блокируем UI
+                    console.warn('[SECURITY] Suspicious behavior detected, but not blocking');
+                    this.counters.suspicious = 0; // Сбрасываем счетчик
+                }
+            }
+            
+            // Сброс счетчиков активности
+            mouseMovements = 0;
+            keyPresses = 0;
+        }, 10000); // Увеличено с 5000 до 10000 мс
+    },
+    
+    // Проверка и очистка входных данных для предотвращения XSS
+    sanitizeInputs: function() {
+        // Перехват всех форм и входных полей
+        document.addEventListener('submit', (e) => {
+            const form = e.target;
+            const inputs = form.querySelectorAll('input, textarea');
+            
+            inputs.forEach(input => {
+                const value = input.value;
+                // Проверка на потенциальные XSS инъекции
+                if (this.detectXSSPattern(value)) {
+                    e.preventDefault();
+                    this.triggerDefense("XSS attempt detected", true);
+                    console.warn('[SECURITY] Potential XSS attack blocked');
+                    input.value = this.sanitizeValue(value);
+                }
+            });
+        });
+    },
+    
+    // Проверка на наличие подозрительных XSS паттернов
+    detectXSSPattern: function(value) {
+        if (!value) return false;
+        
+        // Регулярные выражения для выявления распространенных XSS атак
+        const xssPatterns = [
+            /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+            /javascript\s*:/gi,
+            /on\w+\s*=/gi,
+            /style\s*=\s*["'].*expression\s*\(/gi,
+            /data\s*:\s*text\/html/gi
+        ];
+        
+        return xssPatterns.some(pattern => pattern.test(value));
+    },
+    
+    // Санитизация подозрительных значений
+    sanitizeValue: function(value) {
+        return value
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#x27;")
+            .replace(/`/g, "&#x60;")
+            .replace(/\(/g, "&#40;")
+            .replace(/\)/g, "&#41;");
+    },
+    
+    // Защита от подделки запросов (CSRF)
+    preventBruteForce: function() {
+        let requestCount = 0;
+        let lastRequestTime = Date.now();
+        
+        // Мониторинг запросов
+        const checkRequest = () => {
+            const now = Date.now();
+            const timeDiff = now - lastRequestTime;
+            
+            // Если запросы слишком частые
+            if (timeDiff < 1000) {
+                requestCount++;
+                
+                if (requestCount > 10) {
+                    this.triggerDefense("Brute force attempt detected", false); // Не блокируем UI
+                    requestCount = 0;
+                }
+            } else {
+                requestCount = 0;
+            }
+            
+            lastRequestTime = now;
         };
         
-        // Инициализация защиты
-        devToolsDetection();
-    })();
-    </script>
-</head>
-<body>
-    <!-- Главный экран с роботом -->
-    <header class="hero" id="home">
-        <nav class="main-nav">
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="ru">RU</button>
-            </div>
-            <div class="nav-links">
-                <a href="#home" class="nav-link" data-en="Home" data-ru="Главная">Home</a>
-                <a href="#landings" class="nav-link" data-en="About" data-ru="Обо мне">About</a>
-                <a href="#skills" class="nav-link" data-en="Skills" data-ru="Навыки">Skills</a>
-                <a href="#books" class="nav-link" data-en="Books" data-ru="Книги">Books</a>
-                <a href="#works" class="nav-link" data-en="Works" data-ru="Работы">Works</a>
-                <a href="#order" class="nav-link order-link" data-en="Contact" data-ru="Связаться">Contact</a>
-            </div>
-        </nav>
+        // Прослушивание всех кликов
+        document.addEventListener('click', checkRequest, { passive: true });
+    },
+    
+    // Защита от изменения кода страницы
+    setupAntiTampering: function() {
+        const originalStyles = {};
+        const originalContent = {};
         
-        <div class="container">
-            <div class="circle-overlay"></div>
-            <div class="gradient-overlay"></div>
-            
-            <div class="welcome" data-en="Welcome to my website" data-ru="Добро пожаловать на мой сайт">Welcome to my website</div>
-            <div class="logo" data-en="Matthew Aura" data-ru="Matthew Aura">Matthew Aura</div>
-            
-            <!-- Контейнер для 3D модели робота -->
-            <div class="robot-container">
-                <!-- Spline Canvas для нативного рендеринга -->
-                <div id="spline-container"></div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Пустая секция для создания пространства между роботом и секцией "Обо мне" -->
-    <div class="spacer-section"></div>
-
-    <!-- Секция Обо мне -->
-    <section class="services-section" id="landings">
-        <div class="services-container">
-            <h2 class="section-title" data-en="About Me" data-ru="Обо мне">About Me</h2>
-            <p class="section-desc" data-ru="В свои 16 я активно кодирую на Python, C#, C++, Java и JavaScript. Каждый мой проект – это шанс попрактиковаться, довести всё до ума, подтянуть навыки и применить лучшие практики. Мне интересно создавать что-то новое, что реально полезно и помогает решать сложные задачи. Я стараюсь не просто писать код, а создавать решения, которые изменят то, как люди используют технологии." data-en="At 16, I actively code in Python, C#, C++, Java, and JavaScript. Each project is a chance to practice, perfect everything, improve my skills, and apply best practices. I'm interested in creating something new that's genuinely useful and helps solve complex problems. I try not to just write code, but to create solutions that will change how people use technology.">В свои 16 я активно кодирую на Python, C#, C++, Java и JavaScript. Каждый мой проект – это шанс попрактиковаться, довести всё до ума, подтянуть навыки и применить лучшие практики. Мне интересно создавать что-то новое, что реально полезно и помогает решать сложные задачи. Я стараюсь не просто писать код, а создавать решения, которые изменят то, как люди используют технологии.</p>
-            
-            <p class="section-desc" data-ru="Еще я плотно изучаю криптографию – это очень увлекательно. Я встраиваю сильное шифрование в свои проекты и стремлюсь к высокой защите приложений от взломов и кражи данных. Безопасность для меня – это база, которая поднимает доверие пользователей. В наше время цифровая защита данных – это не просто надо, это вопрос этики, к которому я отношусь серьезно." data-en="I also study cryptography deeply – it's very fascinating. I integrate strong encryption into my projects and aim for high protection of applications from hacking and data theft. Security for me is the foundation that builds user trust. In our time, digital data protection is not just necessary, it's an ethical issue that I take seriously.">Еще я плотно изучаю криптографию – это очень увлекательно. Я встраиваю сильное шифрование в свои проекты и стремлюсь к высокой защите приложений от взломов и кражи данных. Безопасность для меня – это база, которая поднимает доверие пользователей. В наше время цифровая защита данных – это не просто надо, это вопрос этики, к которому я отношусь серьезно.</p>
-            
-            <p class="section-desc" data-ru="Чтение книг полезно не только для работы, но и для личного роста, оно расширяет мой взгляд на вещи и помогает решать разные вопросы. Знания из разных областей дают мне понимание, которое нельзя получить, только программируя. Я думаю, что для создания крутых продуктов нужно понимать, как устроена психология людей, как работает бизнес и как все устроено в обществе. Это я понимаю через чтение и обучение." data-en="Reading books is useful not only for work but also for personal growth, it broadens my perspective and helps solve various issues. Knowledge from different fields gives me insights that can't be gained just by programming. I think that to create great products, you need to understand how human psychology works, how business operates, and how society is structured. This I understand through reading and learning.">Чтение книг полезно не только для работы, но и для личного роста, оно расширяет мой взгляд на вещи и помогает решать разные вопросы. Знания из разных областей дают мне понимание, которое нельзя получить, только программируя. Я думаю, что для создания крутых продуктов нужно понимать, как устроена психология людей, как работает бизнес и как все устроено в обществе. Это я понимаю через чтение и обучение.</p>
-        </div>
-    </section>
-
-    <!-- Секция с навыками -->
-    <section class="skills-section" id="skills">
-        <div class="services-container">
-            <h2 class="section-title" data-en="Skills" data-ru="Навыки">Skills</h2>
-            <p class="section-desc" data-en="I constantly improve my technical skills to deliver high-quality solutions" data-ru="Я постоянно улучшаю свои технические навыки, чтобы предоставлять высококачественные решения">I constantly improve my technical skills to deliver high-quality solutions</p>
-            
-            <div class="skills-container">
-                <div class="skill-item">
-                    <div class="skill-name">Python</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 90%"></div>
-                    </div>
-                    <div class="skill-percent">90%</div>
-                </div>
+        // Сохранение оригинальных стилей важных элементов
+        document.querySelectorAll('.robot-container, .nav-links, .main-nav').forEach(el => {
+            originalStyles[el.className] = el.style.cssText;
+            originalContent[el.className] = el.innerHTML;
+        });
+        
+        // Проверка целостности элементов страницы
+        setInterval(() => {
+            document.querySelectorAll('.robot-container, .nav-links, .main-nav').forEach(el => {
+                // Проверка на изменения стилей
+                if (originalStyles[el.className] && 
+                    originalStyles[el.className] !== el.style.cssText) {
+                    console.warn('[SECURITY] Element styling was modified');
+                    el.style.cssText = originalStyles[el.className];
+                }
                 
-                <div class="skill-item">
-                    <div class="skill-name">JavaScript</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 85%"></div>
-                    </div>
-                    <div class="skill-percent">85%</div>
-                </div>
-                
-                <div class="skill-item">
-                    <div class="skill-name">C#</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 80%"></div>
-                    </div>
-                    <div class="skill-percent">80%</div>
-                </div>
-                
-                <div class="skill-item">
-                    <div class="skill-name">C++</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 75%"></div>
-                    </div>
-                    <div class="skill-percent">75%</div>
-                </div>
-                
-                <div class="skill-item">
-                    <div class="skill-name">Java</div>
-                    <div class="skill-bar">
-                        <div class="skill-level" style="width: 70%"></div>
-                    </div>
-                    <div class="skill-percent">70%</div>
-                </div>
-            </div>
-        </div>
-    </section>
+                // Проверка на внедрение вредоносного кода
+                if (originalContent[el.className] && 
+                    this.detectXSSPattern(el.innerHTML)) {
+                    console.warn('[SECURITY] DOM tampering detected');
+                    el.innerHTML = originalContent[el.className];
+                }
+            });
+        }, 2000);
+    }
+};
 
-    <!-- Секция с любимыми книгами -->
-    <section class="creative-solutions" id="books">
-        <h3 class="literary-title" data-en="Favorite Books" data-ru="Любимые книги">Favorite Books</h3>
+// Функционал для переключения языков
+function initLanguageSwitcher() {
+    // Получаем кнопки переключения языков
+    const langButtons = document.querySelectorAll('.lang-btn');
+    
+    // Проверяем, есть ли сохраненный язык в localStorage
+    const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+    
+    // Функция для изменения языка
+    function changeLanguage(lang) {
+        // Получаем все элементы с атрибутами data-en и data-ru
+        const elements = document.querySelectorAll('[data-' + lang + ']');
         
-        <div class="book-container">
-            <div class="book-item">
-                <div class="book-cover">
-                    <img src="https://i.pinimg.com/originals/a3/4e/fb/a34efbcbe32f6c1a0628a08a99f3c6f8.png" alt="The Black Swan book cover">
-                </div>
-                <div class="book-title" data-en="The Black Swan" data-ru="Черный лебедь">The Black Swan</div>
-                <div class="book-author">Nassim Nicholas Taleb</div>
-                <p class="book-desc" data-en="This book explores the impact of rare, unpredictable events on our world. It has taught me to embrace uncertainty and prepare for the unexpected in both technology and life." data-ru="Эта книга исследует влияние редких, непредсказуемых событий на наш мир. Она научила меня принимать неопределенность и готовиться к неожиданностям как в технологиях, так и в жизни.">This book explores the impact of rare, unpredictable events on our world. It has taught me to embrace uncertainty and prepare for the unexpected in both technology and life.</p>
-        </div>
+        // Обновляем текст для каждого элемента
+        elements.forEach(element => {
+            const translation = element.getAttribute('data-' + lang);
+            if (translation) {
+                // Если элемент имеет дочерний span, обновляем только его
+                const span = element.querySelector('span');
+                if (span) {
+                    span.textContent = translation;
+                } else {
+                    element.textContent = translation;
+                }
+            }
+        });
         
-            <div class="book-item">
-                <div class="book-cover">
-                    <img src="https://s.f.kz/prod/3842/3841001_1000.jpg" alt="Flow book cover">
-                </div>
-                <div class="book-title" data-en="Flow" data-ru="Поток">Flow</div>
-                <div class="book-author">Mihaly Csikszentmihalyi</div>
-                <p class="book-desc" data-en="The Psychology of Optimal Experience. This book has taught me how to achieve deep focus and enjoyment in my work by finding the perfect balance between challenge and skill." data-ru="Психология оптимального переживания. Эта книга научила меня достигать глубокой концентрации и удовольствия в работе, находя идеальный баланс между сложностью задачи и уровнем навыка.">The Psychology of Optimal Experience. This book has taught me how to achieve deep focus and enjoyment in my work by finding the perfect balance between challenge and skill.</p>
-            </div>
+        // Обновляем атрибут lang у html
+        document.documentElement.lang = lang;
+        
+        // Сохраняем выбранный язык в localStorage
+        localStorage.setItem('selectedLanguage', lang);
+        
+        // Обновляем активную кнопку
+        langButtons.forEach(btn => {
+            if (btn.getAttribute('data-lang') === lang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    // Используем делегирование событий для обработки кликов по кнопкам
+    document.querySelector('.language-switcher').addEventListener('click', function(e) {
+        const btn = e.target.closest('.lang-btn');
+        if (btn) {
+            const lang = btn.getAttribute('data-lang');
+            changeLanguage(lang);
+        }
+    });
+    
+    // Устанавливаем язык при загрузке страницы
+    changeLanguage(savedLang);
+}
+
+// Мобильное меню
+function initMobileMenu() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (!mobileMenuBtn) return; // Выход если кнопка не найдена
+    
+    // Обработчик нажатия на кнопку меню
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+    
+    // Закрытие мобильного меню при клике по ссылке
+    document.querySelectorAll('.nav-links .nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+    
+    // Закрытие меню при изменении ориентации экрана
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+    });
+    
+    // Добавление класса для тела документа при открытом меню
+    mobileMenuBtn.addEventListener('click', () => {
+        if (navLinks.classList.contains('active')) {
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        } else {
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
+        }
+    });
+    
+    // Восстановление прокрутки при изменении размера окна
+    window.addEventListener('resize', () => {
+        document.body.style.overflow = '';
+    });
+}
+
+// Загрузка и инициализация 3D модели робота
+async function initRobot() {
+    try {
+        // Получаем контейнер для Spline
+        const splineContainer = document.getElementById('spline-container');
+        if (!splineContainer) return;
+
+        // Создаем экземпляр Application из Spline Runtime
+        const spline = new window.SplineLoader();
+        
+        // Загружаем модель из локального файла
+        const app = await spline.loadFile('./scene.splinecode', {
+            // Настройки для оптимальной производительности
+            credentials: 'same-origin',
+            background: { alpha: true }, // Прозрачный фон
+            environmentPreset: 'neutral',
+            rendererParams: {
+                powerPreference: 'high-performance',
+                antialias: true,
+                alpha: true
+            }
+        });
+        
+        // Добавляем canvas в контейнер
+        splineContainer.appendChild(app.canvas);
+
+        // Настраиваем сцену
+        const scene = app.findObjectByName('Scene');
+        if (scene) {
+            // Отключаем управление камерой, чтобы робот был статичным
+            app.setCamera(scene.findObjectByName('Default Camera'));
+            app.disableAllControls();
+        }
+
+        // Получаем объект робота
+        const robot = app.findObjectByName('Robot') || app.findObjectById('Robot');
+        
+        // Управляем рендерингом в зависимости от видимости
+        setupVisibilityControl(app);
+        
+    } catch (error) {
+        console.error('Ошибка при загрузке 3D модели:', error);
+        // Если не удалось загрузить модель, добавляем запасной вариант
+        fallbackToIframe();
+    }
+}
+
+// Настройка управления видимостью и рендерингом
+function setupVisibilityControl(splineApp) {
+    // Флаг для отслеживания видимости робота
+    let isVisible = true;
+    let renderingPaused = false;
+    
+    // Создаем IntersectionObserver для отслеживания видимости
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // Обновляем статус видимости
+            isVisible = entry.isIntersecting;
             
-            <div class="book-item">
-                <div class="book-cover">
-                    <img src="https://cdn1.ozone.ru/multimedia/1011065616.jpg" alt="Zero to One book cover">
-                </div>
-                <div class="book-title" data-en="Zero to One" data-ru="От нуля к единице">Zero to One</div>
-                <div class="book-author">Peter Thiel</div>
-                <p class="book-desc" data-en="This book sparked my interest in creating truly innovative solutions rather than incremental improvements. It shaped how I think about technology and building valuable products." data-ru="Эта книга пробудила мой интерес к созданию действительно инновационных решений, а не постепенных улучшений. Она сформировала мое мышление о технологиях и создании ценных продуктов.">This book sparked my interest in creating truly innovative solutions rather than incremental improvements. It shaped how I think about technology and building valuable products.</p>
-            </div>
+            // Управляем рендерингом в зависимости от видимости
+            if (isVisible && renderingPaused) {
+                // Возобновляем рендеринг
+                splineApp.play();
+                renderingPaused = false;
+            } else if (!isVisible && !renderingPaused) {
+                // Приостанавливаем рендеринг для экономии ресурсов
+                splineApp.pause();
+                renderingPaused = true;
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    // Начинаем наблюдение за контейнером робота
+    observer.observe(document.querySelector('.robot-container'));
+    
+    // Также приостанавливаем рендеринг, когда вкладка неактивна
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            splineApp.pause();
+            renderingPaused = true;
+        } else if (isVisible) {
+            splineApp.play();
+            renderingPaused = false;
+        }
+    });
+}
+
+// Запасной вариант с iframe, если не удалось загрузить модель
+function fallbackToIframe() {
+    const splineContainer = document.getElementById('spline-container');
+    if (!splineContainer) return;
+    
+    // Создаем iframe как запасной вариант
+    const iframe = document.createElement('iframe');
+    iframe.src = "https://my.spline.design/nexbotrobotcharacterconcept-B4SOFIJdzJ9yhXgdkApFKw2q/";
+    iframe.frameBorder = "0";
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = "100%";
+    iframe.style.height = "160%";
+    iframe.style.transform = "translateY(-15%) scale(0.7)";
+    iframe.style.transformOrigin = "center";
+    
+    // Добавляем iframe в контейнер
+    splineContainer.innerHTML = '';
+    splineContainer.appendChild(iframe);
+}
+
+// Оптимизированная анимация для полос навыков
+function initSkillBars() {
+    const skillItems = document.querySelectorAll('.skill-item');
+    if (skillItems.length === 0) return;
+    
+    // Используем IntersectionObserver для анимации при прокрутке
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const skillBar = entry.target.querySelector('.skill-level');
+                skillBar.style.width = skillBar.style.width || '0%';
+                
+                // Используем requestAnimationFrame для плавной анимации
+                requestAnimationFrame(() => {
+                    skillBar.style.transition = 'width 1s ease-in-out';
+                    requestAnimationFrame(() => {
+                        skillBar.style.width = entry.target.querySelector('.skill-percent').textContent;
+                    });
+                });
+                
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    // Наблюдаем за каждым элементом навыка
+    skillItems.forEach(item => {
+        observer.observe(item);
+    });
+}
+
+// Плавная прокрутка к якорям
+function initSmoothScrolling() {
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href^="#"]');
+        if (!link) return;
+        
+        const targetId = link.getAttribute('href');
+        if (!targetId || targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (!targetElement) return;
+        
+                    e.preventDefault();
+        
+        // Плавная прокрутка с учетом фиксированной навигации
+        const navHeight = document.querySelector('.main-nav').offsetHeight;
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+        
+                window.scrollTo({
+            top: targetPosition,
+                    behavior: 'smooth'
+        });
+    });
+}
+
+// Оптимизация для рендеринга страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация системы безопасности
+    SecuritySystem.init();
+    
+    // Инициализируем переключатель языков
+    initLanguageSwitcher();
+    
+    // Инициализируем мобильное меню
+    initMobileMenu();
+    
+    // Инициализируем 3D модель робота
+    initRobot();
+    
+    // Инициализируем полосы навыков
+    initSkillBars();
+    
+    // Инициализируем плавную прокрутку
+    initSmoothScrolling();
+});
+
+// Добавляем оптимизации для производительности
+window.addEventListener('load', function() {
+    // Отложенная загрузка изображений
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    if ('loading' in HTMLImageElement.prototype) {
+        lazyImages.forEach(img => {
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                delete img.dataset.src;
+            }
+        });
+    } else {
+        // Фолбек для браузеров без поддержки lazy loading
+        const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        delete img.dataset.src;
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        lazyImages.forEach(img => {
+            lazyImageObserver.observe(img);
+        });
+    }
+}); 
+
+// Оптимизация отображения 3D модели робота на мобильных устройствах
+function optimizeRobotForMobile() {
+    // Определяем, является ли устройство мобильным
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
+    if (isMobile) {
+        // Находим контейнер Spline
+        const splineContainer = document.getElementById('spline-container');
+        if (splineContainer) {
+            // Устанавливаем оптимальное масштабирование для мобильных устройств
+            const scale = window.innerWidth < 480 ? 0.7 : 0.85;
             
-            <div class="book-item">
-                <div class="book-cover">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/8/80/Hackers_%26_Painters.jpg" alt="Hackers & Painters book cover">
-                </div>
-                <div class="book-title" data-en="Hackers & Painters" data-ru="Хакеры и художники">Hackers & Painters</div>
-                <div class="book-author">Paul Graham</div>
-                <p class="book-desc" data-en="This collection of essays explores the intersection of technology and creativity. It has shaped my understanding of programming as both a technical craft and an art form, influencing how I approach problem-solving." data-ru="Этот сборник эссе исследует пересечение технологий и творчества. Он сформировал мое понимание программирования как технического ремесла и искусства, влияя на мой подход к решению проблем.">This collection of essays explores the intersection of technology and creativity. It has shaped my understanding of programming as both a technical craft and an art form, influencing how I approach problem-solving.</p>
-            </div>
-        </div>
-    </section>
+            // Если есть канвас внутри контейнера, применяем стили
+            const canvas = splineContainer.querySelector('canvas');
+            if (canvas) {
+                canvas.style.transformOrigin = 'center center';
+                canvas.style.transform = `scale(${scale})`;
+                canvas.style.maxWidth = '100%';
+                canvas.style.maxHeight = '100%';
+            }
+        }
+    }
+}
 
-    <!-- Секция работ -->
-    <section class="works-section" id="works">
-        <div class="marquee-container">
-            <div class="marquee">
-                <span class="filled">MATTHEW AURA</span>
-                <span class="outline">MATTHEW AURA</span>
-                <span class="filled">MATTHEW AURA</span>
-                <span class="outline">MATTHEW AURA</span>
-                <span class="filled">MATTHEW AURA</span>
-                <span class="outline">MATTHEW AURA</span>
-                <span class="filled">MATTHEW AURA</span>
-                <span class="outline">MATTHEW AURA</span>
-                <span class="filled">MATTHEW AURA</span>
-                <span class="outline">MATTHEW AURA</span>
-                <span class="filled">MATTHEW AURA</span>
-                <span class="outline">MATTHEW AURA</span>
-            </div>
-        </div>
-    </section>
+// Улучшенная инициализация для мобильных устройств
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация системы безопасности
+    SecuritySystem.init();
+    
+    // Инициализация переключателя языков
+    initLanguageSwitcher();
+    
+    // Инициализация мобильного меню
+    initMobileMenu();
+    
+    // Инициализация 3D робота
+    initRobot();
+    
+    // Оптимизация отображения робота на мобильных устройствах
+    optimizeRobotForMobile();
+    
+    // Инициализация анимации шкал навыков
+    initSkillBars();
+    
+    // Инициализация плавной прокрутки
+    initSmoothScrolling();
+    
+    // Обработка ориентации экрана для мобильных устройств
+    handleDeviceOrientation();
+    
+    // Переинициализация при изменении размера окна
+    window.addEventListener('resize', function() {
+        optimizeRobotForMobile();
+        handleDeviceOrientation();
+    });
+    
+    // Обработка изменений ориентации устройства
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            optimizeRobotForMobile();
+            handleDeviceOrientation();
+        }, 100);
+    });
+});
 
-    <!-- Секция статистики -->
-    <section class="stats-section">
-        <div class="stat-item">
-            <h2 data-en="Tech" data-ru="Технологии">Tech</h2>
-            <p data-en="Modern Stack" data-ru="Современный стек">Modern Stack</p>
-        </div>
+// Функция для обработки изменений ориентации экрана
+function handleDeviceOrientation() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile && isLandscape && window.innerHeight < 500) {
+        // Если мобильное устройство в ландшафтной ориентации с малой высотой
+        document.documentElement.classList.add('landscape-mobile');
         
-        <div class="stat-item">
-            <h2 data-en="Projects" data-ru="Проекты">Projects</h2>
-            <p data-en="Successfully Delivered" data-ru="Успешно реализованы">Successfully Delivered</p>
-        </div>
-    </section>
-
-    <!-- Секция контактов -->
-    <section class="contact-section" id="order">
-        <!-- Секция о основателе (перемещена сюда) -->
-        <section class="founder-section">
-            <h3 data-en="&quot;The impediment to action advances action. What stands in the way becomes the way.&quot;" data-ru="&quot;Препятствие к действию продвигает действие. То, что стоит на пути, становится путем.&quot;">"The impediment to action advances action. What stands in the way becomes the way."</h3>
-            
-            <div class="founder-info">
-                <h4>matthew aura</h4>
-                <p data-en="CEO" data-ru="Генеральный директор">CEO</p>
-            </div>
-        </section>
-
-        <div class="contact-header">
-            <h2 data-en="CONTACT" data-ru="КОНТАКТ">CONTACT</h2>
-            <div class="icon">
-                <div class="stars"></div>
-                <div class="planet"></div>
-                <div class="ring"></div>
-            </div>
-        </div>
-        
-        <div class="telegram-container">
-            <a href="https://t.me/continuousfreedom" class="telegram-button">
-                <span data-en="TELEGRAM" data-ru="TELEGRAM">TELEGRAM</span>
-            </a>
-            <p class="telegram-desc" data-en="Click the button to contact me directly via Telegram" data-ru="Нажмите на кнопку, чтобы связаться со мной напрямую через Telegram">Click the button to contact me directly via Telegram</p>
-        </div>
-        
-        <p class="tagline" data-en="Where style meets technology" data-ru="Где стиль встречается с технологиями">Where style meets technology</p>
-    </section>
-
-    <!-- Футер -->
-    <footer class="main-footer">
-        <div class="footer-bottom">
-            <p data-en="© 2025 Matthew Aura. All Rights Reserved." data-ru="© 2025 Matthew Aura. Все права защищены.">© 2025 Matthew Aura. All Rights Reserved.</p>
-            <p data-en="Digital Innovation & Creative Solutions" data-ru="Цифровые инновации и креативные решения">Digital Innovation & Creative Solutions</p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html> 
+        // Улучшаем отображение робота
+        const splineContainer = document.getElementById('spline-container');
+        if (splineContainer) {
+            const canvas = splineContainer.querySelector('canvas');
+            if (canvas) {
+                canvas.style.transform = 'scale(0.6)';
+            }
+        }
+    } else {
+        document.documentElement.classList.remove('landscape-mobile');
+    }
+} 
