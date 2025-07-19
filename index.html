@@ -100,22 +100,22 @@
 </head>
 <body>
     <!-- Главный экран с роботом -->
-    <header class="hero" id="home">
-        <nav class="main-nav">
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="ru">RU</button>
+    <header class="hero" id="home" role="banner">
+        <nav class="main-nav" role="navigation" aria-label="Основная навигация">
+            <div class="language-switcher" role="group" aria-label="Переключение языка">
+                <button class="lang-btn active" data-lang="en" aria-pressed="true" aria-label="English">EN</button>
+                <button class="lang-btn" data-lang="ru" aria-pressed="false" aria-label="Русский">RU</button>
             </div>
-            <div class="nav-links">
-                <a href="#home" class="nav-link" data-en="Home" data-ru="Главная">Home</a>
-                <a href="#landings" class="nav-link" data-en="About" data-ru="Обо мне">About</a>
-                <a href="#skills" class="nav-link" data-en="Skills" data-ru="Навыки">Skills</a>
-                <a href="#books" class="nav-link" data-en="Books" data-ru="Книги">Books</a>
-                <a href="#works" class="nav-link" data-en="Works" data-ru="Работы">Works</a>
-                <a href="#order" class="nav-link order-link" data-en="Contact" data-ru="Связаться">Contact</a>
+            <div class="nav-links" role="menubar">
+                <a href="#home" class="nav-link" role="menuitem" data-en="Home" data-ru="Главная">Home</a>
+                <a href="#landings" class="nav-link" role="menuitem" data-en="About" data-ru="Обо мне">About</a>
+                <a href="#skills" class="nav-link" role="menuitem" data-en="Skills" data-ru="Навыки">Skills</a>
+                <a href="#books" class="nav-link" role="menuitem" data-en="Books" data-ru="Книги">Books</a>
+                <a href="#works" class="nav-link" role="menuitem" data-en="Works" data-ru="Работы">Works</a>
+                <a href="#order" class="nav-link order-link" role="menuitem" data-en="Contact" data-ru="Связаться">Contact</a>
             </div>
             <!-- Мобильное меню (добавляется для корректной работы на мобильных) -->
-            <div class="mobile-menu-btn">
+            <div class="mobile-menu-btn" role="button" aria-expanded="false" aria-label="Меню" tabindex="0">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -123,14 +123,14 @@
         </nav>
         
         <div class="container">
-            <div class="circle-overlay"></div>
-            <div class="gradient-overlay"></div>
+            <div class="circle-overlay" aria-hidden="true"></div>
+            <div class="gradient-overlay" aria-hidden="true"></div>
             
             <div class="welcome" data-en="Welcome to my website" data-ru="Добро пожаловать на мой сайт">Welcome to my website</div>
             <div class="logo" data-en="Matthew Aura" data-ru="Matthew Aura">Matthew Aura</div>
             
             <!-- Контейнер для 3D модели робота -->
-            <div class="robot-container">
+            <div class="robot-container" aria-hidden="true">
                 <!-- Spline Canvas для нативного рендеринга -->
                 <div id="spline-container"></div>
             </div>
@@ -138,12 +138,12 @@
     </header>
 
     <!-- Пустая секция для создания пространства между роботом и секцией "Обо мне" -->
-    <div class="spacer-section"></div>
+    <div class="spacer-section" aria-hidden="true"></div>
 
     <!-- Секция Обо мне -->
-    <section class="services-section" id="landings">
+    <section class="services-section" id="landings" role="region" aria-labelledby="about-title">
         <div class="services-container">
-            <h2 class="section-title" data-en="About Me" data-ru="Обо мне">About Me</h2>
+            <h2 class="section-title" id="about-title" data-en="About Me" data-ru="Обо мне">About Me</h2>
             <p class="section-desc" data-ru="Я активно кодирую на Python, C#, C++, Java и JavaScript. Каждый мой проект – это шанс попрактиковаться, довести всё до ума, подтянуть навыки и применить лучшие практики. Мне интересно создавать что-то новое, что реально полезно и помогает решать сложные задачи. Я стараюсь не просто писать код, а создавать решения, которые изменят то, как люди используют технологии." data-en="I actively code in Python, C#, C++, Java, and JavaScript. Each project is a chance to practice, perfect everything, improve my skills, and apply best practices. I'm interested in creating something new that's genuinely useful and helps solve complex problems. I try not to just write code, but to create solutions that will change how people use technology.">Я активно кодирую на Python, C#, C++, Java и JavaScript. Каждый мой проект – это шанс попрактиковаться, довести всё до ума, подтянуть навыки и применить лучшие практики. Мне интересно создавать что-то новое, что реально полезно и помогает решать сложные задачи. Я стараюсь не просто писать код, а создавать решения, которые изменят то, как люди используют технологии.</p>
             
             <p class="section-desc" data-ru="Еще я плотно изучаю криптографию – это очень увлекательно. Я встраиваю сильное шифрование в свои проекты и стремлюсь к высокой защите приложений от взломов и кражи данных. Безопасность для меня – это база, которая поднимает доверие пользователей. В наше время цифровая защита данных – это не просто надо, это вопрос этики, к которому я отношусь серьезно." data-en="I also study cryptography deeply – it's very fascinating. I integrate strong encryption into my projects and aim for high protection of applications from hacking and data theft. Security for me is the foundation that builds user trust. In our time, digital data protection is not just necessary, it's an ethical issue that I take seriously.">Еще я плотно изучаю криптографию – это очень увлекательно. Я встраиваю сильное шифрование в свои проекты и стремлюсь к высокой защите приложений от взломов и кражи данных. Безопасность для меня – это база, которая поднимает доверие пользователей. В наше время цифровая защита данных – это не просто надо, это вопрос этики, к которому я отношусь серьезно.</p>
@@ -153,15 +153,15 @@
     </section>
 
     <!-- Секция с навыками -->
-    <section class="skills-section" id="skills">
+    <section class="skills-section" id="skills" role="region" aria-labelledby="skills-title">
         <div class="services-container">
-            <h2 class="section-title" data-en="Skills" data-ru="Навыки">Skills</h2>
+            <h2 class="section-title" id="skills-title" data-en="Skills" data-ru="Навыки">Skills</h2>
             <p class="section-desc" data-en="I constantly improve my technical skills to deliver high-quality solutions" data-ru="Я постоянно улучшаю свои технические навыки, чтобы предоставлять высококачественные решения">I constantly improve my technical skills to deliver high-quality solutions</p>
             
             <div class="skills-container">
                 <div class="skill-item">
                     <div class="skill-name">Python</div>
-                    <div class="skill-bar">
+                    <div class="skill-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
                         <div class="skill-level" style="width: 90%"></div>
                     </div>
                     <div class="skill-percent">90%</div>
@@ -169,7 +169,7 @@
                 
                 <div class="skill-item">
                     <div class="skill-name">JavaScript</div>
-                    <div class="skill-bar">
+                    <div class="skill-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
                         <div class="skill-level" style="width: 85%"></div>
                     </div>
                     <div class="skill-percent">85%</div>
@@ -177,7 +177,7 @@
                 
                 <div class="skill-item">
                     <div class="skill-name">C#</div>
-                    <div class="skill-bar">
+                    <div class="skill-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
                         <div class="skill-level" style="width: 80%"></div>
                     </div>
                     <div class="skill-percent">80%</div>
@@ -185,7 +185,7 @@
                 
                 <div class="skill-item">
                     <div class="skill-name">C++</div>
-                    <div class="skill-bar">
+                    <div class="skill-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
                         <div class="skill-level" style="width: 75%"></div>
                     </div>
                     <div class="skill-percent">75%</div>
@@ -193,7 +193,7 @@
                 
                 <div class="skill-item">
                     <div class="skill-name">Java</div>
-                    <div class="skill-bar">
+                    <div class="skill-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
                         <div class="skill-level" style="width: 70%"></div>
                     </div>
                     <div class="skill-percent">70%</div>
@@ -203,22 +203,22 @@
     </section>
 
     <!-- Секция с любимыми книгами -->
-    <section class="creative-solutions" id="books">
-        <h3 class="literary-title" data-en="Favorite Books" data-ru="Любимые книги">Favorite Books</h3>
+    <section class="creative-solutions" id="books" role="region" aria-labelledby="books-title">
+        <h3 class="literary-title" id="books-title" data-en="Favorite Books" data-ru="Любимые книги">Favorite Books</h3>
         
         <div class="book-container">
             <div class="book-item">
                 <div class="book-cover">
-                    <img src="https://i.pinimg.com/originals/a3/4e/fb/a34efbcbe32f6c1a0628a08a99f3c6f8.png" alt="The Black Swan book cover">
+                    <img src="https://i.pinimg.com/originals/a3/4e/fb/a34efbcbe32f6c1a0628a08a99f3c6f8.png" alt="The Black Swan book cover" loading="lazy">
                 </div>
                 <div class="book-title" data-en="The Black Swan" data-ru="Черный лебедь">The Black Swan</div>
                 <div class="book-author">Nassim Nicholas Taleb</div>
                 <p class="book-desc" data-en="This book explores the impact of rare, unpredictable events on our world. It has taught me to embrace uncertainty and prepare for the unexpected in both technology and life." data-ru="Эта книга исследует влияние редких, непредсказуемых событий на наш мир. Она научила меня принимать неопределенность и готовиться к неожиданностям как в технологиях, так и в жизни.">This book explores the impact of rare, unpredictable events on our world. It has taught me to embrace uncertainty and prepare for the unexpected in both technology and life.</p>
-        </div>
-        
+            </div>
+            
             <div class="book-item">
                 <div class="book-cover">
-                    <img src="https://s.f.kz/prod/3842/3841001_1000.jpg" alt="Flow book cover">
+                    <img src="https://s.f.kz/prod/3842/3841001_1000.jpg" alt="Flow book cover" loading="lazy">
                 </div>
                 <div class="book-title" data-en="Flow" data-ru="Поток">Flow</div>
                 <div class="book-author">Mihaly Csikszentmihalyi</div>
@@ -227,7 +227,7 @@
             
             <div class="book-item">
                 <div class="book-cover">
-                    <img src="https://cdn1.ozone.ru/multimedia/1011065616.jpg" alt="Zero to One book cover">
+                    <img src="https://cdn1.ozone.ru/multimedia/1011065616.jpg" alt="Zero to One book cover" loading="lazy">
                 </div>
                 <div class="book-title" data-en="Zero to One" data-ru="От нуля к единице">Zero to One</div>
                 <div class="book-author">Peter Thiel</div>
@@ -236,7 +236,7 @@
             
             <div class="book-item">
                 <div class="book-cover">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/8/80/Hackers_%26_Painters.jpg" alt="Hackers & Painters book cover">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/8/80/Hackers_%26_Painters.jpg" alt="Hackers & Painters book cover" loading="lazy">
                 </div>
                 <div class="book-title" data-en="Hackers & Painters" data-ru="Хакеры и художники">Hackers & Painters</div>
                 <div class="book-author">Paul Graham</div>
@@ -246,8 +246,9 @@
     </section>
 
     <!-- Секция работ -->
-    <section class="works-section" id="works">
-        <div class="marquee-container">
+    <section class="works-section" id="works" role="region" aria-labelledby="works-title">
+        <h2 id="works-title" class="sr-only" data-en="Works" data-ru="Работы">Works</h2>
+        <div class="marquee-container" aria-hidden="true">
             <div class="marquee">
                 <span class="filled">MATTHEW AURA</span>
                 <span class="outline">MATTHEW AURA</span>
@@ -266,7 +267,7 @@
     </section>
 
     <!-- Секция статистики -->
-    <section class="stats-section">
+    <section class="stats-section" role="region" aria-label="Статистика">
         <div class="stat-item">
             <h2 data-en="Tech" data-ru="Технологии">Технологии</h2>
             <p data-en="Modern Stack" data-ru="Современный стек">Современный стек</p>
@@ -279,9 +280,9 @@
     </section>
 
     <!-- Секция контактов -->
-    <section class="contact-section" id="order">
+    <section class="contact-section" id="order" role="region" aria-labelledby="contact-title">
         <!-- Секция о основателе (перемещена сюда) -->
-        <section class="founder-section">
+        <section class="founder-section" role="region" aria-label="О основателе">
             <h3 data-en="&quot;The impediment to action advances action. What stands in the way becomes the way.&quot;" data-ru="&quot;Препятствие к действию продвигает действие. То, что стоит на пути, становится путем.&quot;">"The impediment to action advances action. What stands in the way becomes the way."</h3>
             
             <div class="founder-info">
@@ -291,8 +292,8 @@
         </section>
 
         <div class="contact-header">
-            <h2 data-en="CONTACT" data-ru="КОНТАКТ">CONTACT</h2>
-            <div class="icon">
+            <h2 id="contact-title" data-en="CONTACT" data-ru="КОНТАКТ">CONTACT</h2>
+            <div class="icon" aria-hidden="true">
                 <div class="stars"></div>
                 <div class="planet"></div>
                 <div class="ring"></div>
@@ -300,7 +301,7 @@
         </div>
         
         <div class="telegram-container">
-            <a href="https://t.me/continuousfreedom" class="telegram-button">
+            <a href="https://t.me/continuousfreedom" class="telegram-button" role="button" aria-label="Связаться через Telegram">
                 <span data-en="TELEGRAM" data-ru="TELEGRAM">TELEGRAM</span>
             </a>
             <p class="telegram-desc" data-en="Click the button to contact me directly via Telegram" data-ru="Нажмите на кнопку, чтобы связаться со мной напрямую через Telegram">Click the button to contact me directly via Telegram</p>
@@ -310,7 +311,7 @@
     </section>
 
     <!-- Футер -->
-    <footer class="main-footer">
+    <footer class="main-footer" role="contentinfo">
         <div class="footer-bottom">
             <p data-en="© 2025 Matthew Aura. All Rights Reserved." data-ru="© 2025 Matthew Aura. Все права защищены.">© 2025 Matthew Aura. All Rights Reserved.</p>
             <p data-en="Digital Innovation & Creative Solutions" data-ru="Цифровые инновации и креативные решения">Digital Innovation & Creative Solutions</p>
