@@ -272,49 +272,7 @@ function initLanguageSwitcher() {
     const langButtons = document.querySelectorAll('.lang-btn');
     
     // Проверяем, есть ли сохраненный язык в localStorage
-    let savedLang = localStorage.getItem('selectedLanguage');
-    
-    // Если язык не сохранен, пробуем определить его автоматически
-    if (!savedLang) {
-        // Проверяем предпочтения пользователя через браузер
-        const userLang = navigator.language || navigator.userLanguage;
-        
-        // Если язык содержит 'ru' или 'RU', устанавливаем русский
-        if (userLang && (userLang.toLowerCase().includes('ru'))) {
-            savedLang = 'ru';
-        } else {
-            // Иначе по умолчанию устанавливаем русский (по требованию)
-            savedLang = 'ru';
-        }
-    }
-    
-    // Словарь для заголовков страницы
-    const pageTitles = {
-        'ru': {
-            'default': 'Matthew Aura | Цифровое портфолио',
-            'home': 'Matthew Aura | Главная',
-            'landings': 'Matthew Aura | Обо мне',
-            'skills': 'Matthew Aura | Навыки',
-            'books': 'Matthew Aura | Любимые книги',
-            'works': 'Matthew Aura | Работы',
-            'order': 'Matthew Aura | Связаться'
-        },
-        'en': {
-            'default': 'Matthew Aura | Digital Portfolio',
-            'home': 'Matthew Aura | Home',
-            'landings': 'Matthew Aura | About Me',
-            'skills': 'Matthew Aura | Skills',
-            'books': 'Matthew Aura | Favorite Books',
-            'works': 'Matthew Aura | Works',
-            'order': 'Matthew Aura | Contact'
-        }
-    };
-    
-    // Функция для обновления заголовка страницы в соответствии с текущим разделом
-    function updatePageTitle(lang, sectionId = 'default') {
-        const section = sectionId || 'default';
-        document.title = pageTitles[lang][section];
-    }
+    const savedLang = localStorage.getItem('selectedLanguage') || 'en';
     
     // Функция для изменения языка
     function changeLanguage(lang) {
@@ -338,15 +296,6 @@ function initLanguageSwitcher() {
         // Обновляем атрибут lang у html
         document.documentElement.lang = lang;
         
-        // Обновляем title страницы
-        // Определяем текущий активный раздел
-        let activeSection = 'default';
-        const hash = window.location.hash;
-        if (hash) {
-            activeSection = hash.substring(1); // Удаляем знак # из начала хеша
-        }
-        updatePageTitle(lang, activeSection);
-        
         // Сохраняем выбранный язык в localStorage
         localStorage.setItem('selectedLanguage', lang);
         
@@ -354,24 +303,11 @@ function initLanguageSwitcher() {
         langButtons.forEach(btn => {
             if (btn.getAttribute('data-lang') === lang) {
                 btn.classList.add('active');
-                btn.setAttribute('aria-pressed', 'true');
             } else {
                 btn.classList.remove('active');
-                btn.setAttribute('aria-pressed', 'false');
             }
         });
     }
-    
-    // Отслеживаем изменение хеша (переход между секциями)
-    window.addEventListener('hashchange', function() {
-        const currentLang = localStorage.getItem('selectedLanguage') || 'ru';
-        let sectionId = 'default';
-        const hash = window.location.hash;
-        if (hash) {
-            sectionId = hash.substring(1);
-        }
-        updatePageTitle(currentLang, sectionId);
-    });
     
     // Используем делегирование событий для обработки кликов по кнопкам
     document.querySelector('.language-switcher').addEventListener('click', function(e) {
@@ -397,89 +333,53 @@ function initMobileMenu() {
     const newMobileBtn = mobileMenuBtn.cloneNode(true);
     mobileMenuBtn.parentNode.replaceChild(newMobileBtn, mobileMenuBtn);
     
-    // Функция блокировки прокрутки тела при открытом меню
-    function toggleBodyScroll(isMenuActive) {
-        if (isMenuActive) {
-            // Блокируем прокрутку
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
-            document.body.style.height = '100%';
-            document.documentElement.style.height = '100%';
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
-            // Сохраняем текущую позицию скролла
-            document.body.dataset.scrollY = window.scrollY;
-        } else {
-            // Восстанавливаем прокрутку
-            document.body.style.overflow = '';
-            document.documentElement.style.overflow = '';
-            document.body.style.height = '';
-            document.documentElement.style.position = '';
-            document.body.style.width = '';
-            document.documentElement.style.height = '';
-            // Восстанавливаем позицию скролла
-            window.scrollTo(0, parseInt(document.body.dataset.scrollY || '0'));
-        }
-    }
-    
-    // Функция переключения меню с улучшенной блокировкой прокрутки
-    function toggleMenu(e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        const isActive = newMobileBtn.classList.toggle('active');
+    // Добавляем новый обработчик для мобильного меню с поддержкой тач-событий
+    newMobileBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.toggle('active');
         navLinks.classList.toggle('active');
         
-        // Обновляем атрибуты доступности
-        newMobileBtn.setAttribute('aria-expanded', isActive);
-        
-        // Переключаем состояние прокрутки тела
-        toggleBodyScroll(isActive);
+        if (navLinks.classList.contains('active')) {
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        } else {
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
+        }
         
         return false;
-    }
+    });
     
-    // Добавляем обработчик для клика по кнопке меню
-    newMobileBtn.addEventListener('click', toggleMenu);
-    
-    // Добавляем обработчик для тач-событий (для мобильных устройств)
-    newMobileBtn.addEventListener('touchend', toggleMenu, {passive: false});
+    // Добавляем обработчик для тач-событий
+    newMobileBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        
+        if (navLinks.classList.contains('active')) {
+            document.body.style.overflow = 'hidden'; // Предотвращаем прокрутку страницы
+        } else {
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
+        }
+        
+        return false;
+    }, {passive: false});
     
     // Закрытие мобильного меню при клике по ссылке
     document.querySelectorAll('.nav-links .nav-link').forEach(link => {
         link.addEventListener('click', () => {
             newMobileBtn.classList.remove('active');
             navLinks.classList.remove('active');
-            // Восстанавливаем прокрутку
-            toggleBodyScroll(false);
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
         });
     });
     
     // Закрытие меню при изменении ориентации экрана
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+        if (window.innerWidth > 768) {
             newMobileBtn.classList.remove('active');
             navLinks.classList.remove('active');
-            // Восстанавливаем прокрутку
-            toggleBodyScroll(false);
-        }
-    });
-    
-    // Закрытие меню при нажатии ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && navLinks.classList.contains('active')) {
-            toggleMenu();
-        }
-    });
-    
-    // Закрытие меню при клике вне меню
-    document.addEventListener('click', function(e) {
-        if (navLinks.classList.contains('active') && 
-            !navLinks.contains(e.target) && 
-            !newMobileBtn.contains(e.target)) {
-            toggleMenu();
+            document.body.style.overflow = ''; // Восстанавливаем прокрутку
         }
     });
 }
@@ -491,66 +391,41 @@ async function initRobot() {
         const splineContainer = document.getElementById('spline-container');
         if (!splineContainer) return;
 
-        // Создаем IntersectionObserver для отложенной загрузки модели
-        const robotObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                // Загружаем модель только когда контейнер появляется в области видимости
-                if (entry.isIntersecting) {
-                    loadRobotModel();
-                    observer.unobserve(entry.target); // Прекращаем наблюдение после загрузки
-                }
-            });
-        }, {
-            rootMargin: '0px 0px 500px 0px', // Предзагрузка, когда до элемента остается 500px
-            threshold: 0.1
-        });
-
-        // Начинаем наблюдение за контейнером
-        robotObserver.observe(splineContainer);
-
-        // Функция для загрузки 3D модели
-        async function loadRobotModel() {
-            try {
-                // Создаем экземпляр Application из Spline Runtime
-                const spline = new window.SplineLoader();
-                
-                // Загружаем модель из локального файла
-                const app = await spline.loadFile('./scene.splinecode', {
-                    // Настройки для оптимальной производительности
-                    credentials: 'same-origin',
-                    background: { alpha: true }, // Прозрачный фон
-                    environmentPreset: 'neutral',
-                    rendererParams: {
-                        powerPreference: 'high-performance',
-                        antialias: true,
-                        alpha: true
-                    }
-                });
-                
-                // Добавляем canvas в контейнер
-                splineContainer.appendChild(app.canvas);
-
-                // Настраиваем сцену
-                const scene = app.findObjectByName('Scene');
-                if (scene) {
-                    // Отключаем управление камерой, чтобы робот был статичным
-                    app.setCamera(scene.findObjectByName('Default Camera'));
-                    app.disableAllControls();
-                }
-
-                // Получаем объект робота
-                const robot = app.findObjectByName('Robot') || app.findObjectById('Robot');
-                
-                // Управляем рендерингом в зависимости от видимости
-                setupVisibilityControl(app);
-            } catch (error) {
-                console.error('Ошибка при загрузке 3D модели:', error);
-                // Если не удалось загрузить модель, добавляем запасной вариант
-                fallbackToIframe();
+        // Создаем экземпляр Application из Spline Runtime
+        const spline = new window.SplineLoader();
+        
+        // Загружаем модель из локального файла
+        const app = await spline.loadFile('./scene.splinecode', {
+            // Настройки для оптимальной производительности
+            credentials: 'same-origin',
+            background: { alpha: true }, // Прозрачный фон
+            environmentPreset: 'neutral',
+            rendererParams: {
+                powerPreference: 'high-performance',
+                antialias: true,
+                alpha: true
             }
+        });
+        
+        // Добавляем canvas в контейнер
+        splineContainer.appendChild(app.canvas);
+
+        // Настраиваем сцену
+        const scene = app.findObjectByName('Scene');
+        if (scene) {
+            // Отключаем управление камерой, чтобы робот был статичным
+            app.setCamera(scene.findObjectByName('Default Camera'));
+            app.disableAllControls();
         }
+
+        // Получаем объект робота
+        const robot = app.findObjectByName('Robot') || app.findObjectById('Robot');
+        
+        // Управляем рендерингом в зависимости от видимости
+        setupVisibilityControl(app);
+        
     } catch (error) {
-        console.error('Ошибка инициализации 3D модели:', error);
+        console.error('Ошибка при загрузке 3D модели:', error);
         // Если не удалось загрузить модель, добавляем запасной вариант
         fallbackToIframe();
     }
@@ -750,83 +625,6 @@ function optimizeRobotForMobile() {
     }
 }
 
-// Функция для улучшения поддержки сенсорных событий
-function enhanceTouchInteractions() {
-    // Элементы, с которыми пользователь будет взаимодействовать
-    const touchElements = document.querySelectorAll('.nav-link, .lang-btn, .telegram-button');
-    
-    // Добавляем активное состояние для всех интерактивных элементов
-    touchElements.forEach(element => {
-        // Для сенсорных событий
-        element.addEventListener('touchstart', function(e) {
-            // Добавляем класс активного состояния
-            this.classList.add('touch-active');
-        }, {passive: true});
-        
-        // Удаляем класс активного состояния при окончании касания
-        element.addEventListener('touchend', function(e) {
-            // Предотвращаем двойное срабатывание события
-            e.preventDefault();
-            
-            // Удаляем класс активного состояния с небольшой задержкой
-            setTimeout(() => {
-                this.classList.remove('touch-active');
-            }, 300);
-        }, {passive: false});
-        
-        // Удаляем класс активного состояния при отмене касания
-        element.addEventListener('touchcancel', function(e) {
-            this.classList.remove('touch-active');
-        }, {passive: true});
-    });
-    
-    // Предотвращение зума при двойном тапе (на iOS)
-    const nonZoomingTouchElements = document.querySelectorAll('button, a, .mobile-menu-btn');
-    nonZoomingTouchElements.forEach(element => {
-        element.addEventListener('touchend', function(e) {
-            // Предотвращаем зум только для элементов управления, не влияя на контент
-            e.preventDefault();
-        }, {passive: false});
-    });
-    
-    // Улучшение прокрутки на iOS
-    document.addEventListener('touchmove', function(e) {
-        // Проверяем, открыто ли мобильное меню
-        const menuIsOpen = document.querySelector('.nav-links.active');
-        
-        if (menuIsOpen) {
-            // Если меню открыто, блокируем прокрутку
-            e.preventDefault();
-        }
-    }, {passive: false});
-    
-    // Определение и обработка ориентации устройства
-    window.addEventListener('orientationchange', function() {
-        // Добавляем класс к HTML в зависимости от ориентации
-        setTimeout(() => {
-            if (window.innerHeight < window.innerWidth && window.innerHeight < 500) {
-                document.documentElement.classList.add('landscape-mobile');
-            } else {
-                document.documentElement.classList.remove('landscape-mobile');
-            }
-            
-            // Переинициализируем отображение робота при смене ориентации
-            optimizeRobotForMobile();
-            
-            // Закрываем мобильное меню при смене ориентации
-            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-            const navLinks = document.querySelector('.nav-links');
-            
-            if (mobileMenuBtn && navLinks.classList.contains('active')) {
-                mobileMenuBtn.classList.remove('active');
-                navLinks.classList.remove('active');
-                document.body.style.overflow = '';
-                document.documentElement.style.overflow = '';
-            }
-        }, 300); // Задержка для завершения поворота
-    });
-}
-
 // Улучшенная инициализация для мобильных устройств
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация системы безопасности
@@ -849,9 +647,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Обработка ориентации экрана для мобильных устройств
     handleDeviceOrientation();
-    
-    // Улучшение сенсорных взаимодействий
-    enhanceTouchInteractions();
     
     // Инициализация мобильного меню с небольшой задержкой для надежности
     setTimeout(function() {
