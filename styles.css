@@ -1,3 +1,23 @@
+/* Стили для активных состояний при касании */
+.touch-active {
+    transform: scale(0.97);
+    opacity: 0.9;
+    transition: transform 0.2s ease-out !important;
+}
+
+/* Стиль для скрытия элементов от визуального отображения, но сохранения их для экранных читалок */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    white-space: nowrap;
+}
+
 /* Сброс стилей и основные настройки */
 * {
     margin: 0;
@@ -259,6 +279,9 @@ img {
     -webkit-backface-visibility: hidden;
     transform-style: preserve-3d;
     contain: content;
+    max-width: 100%;
+    height: 100%;
+    position: relative;
 }
 
 /* Стили для canvas элемента Spline */
@@ -1942,6 +1965,171 @@ html, body {
     
     .stat-item p {
         font-size: 0.8rem;
+    }
+} 
+
+/* Улучшение областей касания для мобильных устройств */
+@media (max-width: 768px) {
+    /* Увеличиваем размеры кнопок и ссылок для удобства нажатия */
+    .nav-link, .lang-btn, .telegram-button, .mobile-menu-btn {
+        min-width: 44px; /* Минимальная ширина для удобного касания */
+        min-height: 44px; /* Минимальная высота для удобного касания */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 15px; /* Увеличенные внутренние отступы */
+    }
+    
+    /* Улучшаем интерактивные области */
+    .nav-links {
+        gap: 12px; /* Увеличиваем расстояние между элементами навигации */
+    }
+    
+    /* Увеличиваем область нажатия для мобильного меню */
+    .mobile-menu-btn {
+        width: 48px;
+        height: 48px;
+        padding: 12px;
+        margin-right: 8px;
+    }
+    
+    /* Увеличиваем кнопки переключения языка */
+    .lang-btn {
+        padding: 10px 15px;
+        font-size: 16px; /* Увеличиваем размер шрифта для лучшей видимости */
+    }
+    
+    /* Добавляем дополнительное пространство вокруг интерактивных элементов */
+    .telegram-button {
+        padding: 15px 25px;
+        margin: 10px 0;
+    }
+    
+    /* Увеличиваем размер шрифта для лучшей читаемости на мобильных устройствах */
+    .section-desc, .book-desc, .telegram-desc {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    
+    /* Добавляем активное состояние для всех интерактивных элементов */
+    .nav-link:active, .lang-btn:active, .telegram-button:active {
+        transform: scale(0.98); /* Немного уменьшаем при нажатии для визуального отклика */
+    }
+}
+
+/* Дополнительные улучшения для самых маленьких экранов */
+@media (max-width: 375px) {
+    .nav-link, .lang-btn {
+        padding: 10px; /* Немного меньше отступы, но сохраняем минимальные размеры */
+    }
+    
+    .mobile-menu-btn {
+        width: 44px;
+        height: 44px;
+    }
+} 
+
+/* Индикатор загрузки для 3D модели - скрытый */
+#spline-container.loading::before {
+    display: none; /* Полностью скрываем индикатор загрузки */
+}
+
+/* Контейнер для робота */
+.robot-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    z-index: 1;
+    overflow: visible;
+    pointer-events: none;
+}
+
+/* Стили для мобильного меню - объединенная версия */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    z-index: 9999;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+.mobile-menu-btn span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+    will-change: transform, opacity;
+}
+
+.mobile-menu-btn span:nth-child(1) {
+    transform-origin: left top;
+}
+
+.mobile-menu-btn span:nth-child(2) {
+    opacity: 1;
+}
+
+.mobile-menu-btn span:nth-child(3) {
+    transform-origin: left bottom;
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translateY(-1px);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translateY(1px);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .nav-links {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.9);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: left 0.3s ease;
+        z-index: 9998;
+        padding: 80px 0;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .nav-links.active {
+        left: 0;
     }
 } 
 
